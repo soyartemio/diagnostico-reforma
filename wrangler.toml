@@ -1,4 +1,4 @@
-name = "diagnostico-reforma"
+name = "diagnostico-reforma2"
 main = "worker/index.js"
 compatibility_date = "2024-09-01"
 compatibility_flags = ["nodejs_compat"]
