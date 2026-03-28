@@ -2,12 +2,13 @@ name = "diagnostico-reforma"
 main = "worker/index.js"
 compatibility_date = "2024-09-01"
 compatibility_flags = ["nodejs_compat"]
+account_id = "2a1e912dd4e0b73f3a869a77014e93bf"
 
 # Vinculación con la base de datos D1
 [[d1_databases]]
 binding = "DB"
 database_name = "diagnostico-reforma-db"
-database_id = "REEMPLAZAR_CON_TU_DATABASE_ID"
+database_id = "923161b7-acd0-4b0e-9396-692adccc0c50"
 
 [vars]
 ADMIN_PASSWORD = "Soberania2026"
