@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Diagnóstico Operativo · Grupo La Reforma</title>
+  <meta name="description" content="Herramienta de diagnóstico operativo profundo para Forestal La Reforma — Industria 4.0." />
+  <meta name="robots" content="noindex, nofollow" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════
+     BARRA DE PROGRESO PERSISTENTE
+═══════════════════════════════════════ -->
+<div id="progress-bar-container" role="progressbar" aria-valuemin="0" aria-valuemax="100">
+  <div id="progress-track">
+    <div id="progress-fill"></div>
+  </div>
+  <span id="progress-label">0 / 10</span>
+  <div id="autosave-indicator">
+    <div id="autosave-dot"></div>
+    <span id="autosave-text">Listo</span>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     APLICACIÓN PRINCIPAL
+═══════════════════════════════════════ -->
+<div id="app">
+
+  <!-- HEADER -->
+  <header class="site-header">
+    <div class="logo-wrapper" id="logo-btn" role="button" tabindex="0" aria-label="Logo Grupo La Reforma">
+      <div class="logo-icon" id="logo-icon">🌲</div>
+      <div class="logo-text">
+        <div class="logo-name">Grupo La Reforma</div>
+        <div class="logo-sub">Sistema de Diagnóstico Operativo</div>
+      </div>
+    </div>
+    <p class="header-desc mt-4">
+      Este cuestionario nos permite identificar los puntos críticos de proceso, información y escalabilidad.
+      Tus respuestas se guardan automáticamente conforme avanzas.
+    </p>
+  </header>
+
+
+
+  <nav class="section-nav" id="section-nav" aria-label="Secciones del diagnóstico">
+    <button class="section-tab active" data-section="0" id="tab-0">
+      <span class="tab-icon">📊</span><span class="tab-label">Ventas</span><span class="tab-check" id="check-0">✓</span>
+    </button>
+    <button class="section-tab" data-section="1" id="tab-1">
+      <span class="tab-icon">⚙️</span><span class="tab-label">Producción</span><span class="tab-check" id="check-1">✓</span>
+    </button>
+    <button class="section-tab" data-section="2" id="tab-2">
+      <span class="tab-icon">🚛</span><span class="tab-label">Logística</span><span class="tab-check" id="check-2">✓</span>
+    </button>
+    <button class="section-tab" data-section="3" id="tab-3">
+      <span class="tab-icon">🖥️</span><span class="tab-label">Admin / TI</span><span class="tab-check" id="check-3">✓</span>
+    </button>
+    <button class="section-tab" data-section="4" id="tab-4">
+      <span class="tab-icon">🌿</span><span class="tab-label">Calidad</span><span class="tab-check" id="check-4">✓</span>
+    </button>
+  </nav>
+
+  <!-- ════════════════════════════════
+       SECCIÓN 0: VENTAS
+  ════════════════════════════════ -->
+  <div class="section-panel active" id="panel-0">
+    <h2 class="section-title">📊 Ventas y Clientes</h2>
+    <p class="section-desc">Cómo fluye la información comercial y qué fricciones afectan al cliente final.</p>
+
+    <!-- Q1 -->
+    <div class="question-card" id="card-q1">
+      <div class="q-meta">
+        <div class="q-num">1</div>
+        <span class="q-tag">Shadow IT</span>
+      </div>
+      <p class="q-title">¿Qué parte de tu trabajo diario tienes que llevar en un Excel, libreta o grupo de WhatsApp porque el sistema actual simplemente no ayuda o es muy lento?</p>
+      <p class="q-objetivo">🎯 Objetivo: Encontrar dónde el software viejo ya fue abandonado por el equipo.</p>
+      <div class="field-group">
+        <label class="field-label" for="q1">Tu respuesta</label>
+        <textarea id="q1" data-qid="q1" data-seccion="Ventas"
+          data-texto="¿Qué parte de tu trabajo diario tienes que llevar en un Excel, libreta o grupo de WhatsApp porque el sistema actual simplemente no ayuda o es muy lento?"
+          placeholder="Describe qué herramientas paralelas usas y por qué..."></textarea>
+      </div>
+    </div>
+
+    <!-- Q2 -->
+    <div class="question-card" id="card-q2">
+      <div class="q-meta">
+        <div class="q-num">2</div>
+        <span class="q-tag">Factor Cliente</span>
+      </div>
+      <p class="q-title">¿Cuál es la queja más común de nuestros clientes respecto a la información o tiempos de sus pedidos?</p>
+      <p class="q-objetivo">🎯 Objetivo: Ver cómo el software actual afecta la reputación de los 100+ años de la empresa.</p>
+      <div class="field-group">
+        <label class="field-label" for="q2">Tu respuesta</label>
+        <textarea id="q2" data-qid="q2" data-seccion="Ventas"
+          data-texto="¿Cuál es la queja más común de nuestros clientes respecto a la información o tiempos de sus pedidos?"
+          placeholder="Describe las quejas recurrentes y el impacto en el cliente..."></textarea>
+      </div>
+    </div>
+
+    <div class="section-actions">
+      <button class="btn btn-primary" onclick="goToSection(1)">Siguiente: Producción →</button>
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════
+       SECCIÓN 1: PRODUCCIÓN
+  ════════════════════════════════ -->
+  <div class="section-panel" id="panel-1">
+    <h2 class="section-title">⚙️ Producción y Procesos</h2>
+    <p class="section-desc">Procesos críticos de manufactura: secado, tratamiento a presión y control de calidad.</p>
+
+    <!-- Q3 -->
+    <div class="question-card" id="card-q3">
+      <div class="q-meta">
+        <div class="q-num">3</div>
+        <span class="q-tag">Puntos Ciegos</span>
+      </div>
+      <p class="q-title">¿Cuál es esa pregunta que te hacen seguido y que te toma más de 10 minutos contestar porque tienes que buscar en varios lados? (Ej: "¿Cuánto pino nos queda para el sector ferroviario?")</p>
+      <p class="q-objetivo">🎯 Objetivo: Identificar la falta de visibilidad de inventario en tiempo real.</p>
+      <div class="field-group">
+        <label class="field-label" for="q3">Tu respuesta</label>
+        <textarea id="q3" data-qid="q3" data-seccion="Producción"
+          data-texto="¿Cuál es esa pregunta que te hacen seguido y que te toma más de 10 minutos contestar porque tienes que buscar en varios lados?"
+          placeholder="Describe cuál consulta te 'roba' más tiempo y en qué sistemas buscas..."></textarea>
+      </div>
+    </div>
+
+    <!-- Q4 -->
+    <div class="question-card" id="card-q4">
+      <div class="q-meta">
+        <div class="q-num">4</div>
+        <span class="q-tag">Cuello de Botella</span>
+      </div>
+      <p class="q-title">Si hoy llegara un pedido de 5 veces el volumen normal de postes o durmientes, ¿en qué parte de la oficina o planta se haría el mayor "atascadero" de papeles y trámites?</p>
+      <p class="q-objetivo">🎯 Objetivo: Encontrar el proceso que no es escalable bajo demanda pico.</p>
+      <div class="field-group">
+        <label class="field-label" for="q4">Tu respuesta</label>
+        <textarea id="q4" data-qid="q4" data-seccion="Producción"
+          data-texto="Si hoy llegara un pedido de 5 veces el volumen normal, ¿en qué parte de la planta se haría el mayor 'atascadero'?"
+          placeholder="Describe el punto exacto de fractura bajo volumen alto..."></textarea>
+      </div>
+    </div>
+
+    <!-- Q5 -->
+    <div class="question-card" id="card-q5">
+      <div class="q-meta">
+        <div class="q-num">5</div>
+        <span class="q-tag">Control Técnico</span>
+      </div>
+      <p class="q-title">En los procesos de Secado en Estufa y Tratamiento a Presión, ¿cómo se registran actualmente los parámetros críticos (temperatura, tiempo, presión, agente químico)? ¿En papel, en Excel, en algún sistema?</p>
+      <p class="q-objetivo">🎯 Objetivo: Evaluar el estado de digitalización del núcleo MES de la planta.</p>
+      <div class="field-group">
+        <label class="field-label" for="q5">Tu respuesta</label>
+        <textarea id="q5" data-qid="q5" data-seccion="Producción"
+          data-texto="En Secado en Estufa y Tratamiento a Presión, ¿cómo se registran actualmente los parámetros críticos (temperatura, tiempo, presión, agente químico)?"
+          placeholder="Describe el método actual de registro y sus limitaciones..."></textarea>
+      </div>
+    </div>
+
+    <div class="section-actions">
+      <button class="btn btn-secondary" onclick="goToSection(0)">← Ventas</button>
+      <button class="btn btn-primary" onclick="goToSection(2)">Siguiente: Logística →</button>
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════
+       SECCIÓN 2: LOGÍSTICA
+  ════════════════════════════════ -->
+  <div class="section-panel" id="panel-2">
+    <h2 class="section-title">🚛 Logística y Distribución</h2>
+    <p class="section-desc">Flujo de producto terminado desde planta hasta el cliente, entregas y trazabilidad.</p>
+
+    <!-- Q6 -->
+    <div class="question-card" id="card-q6">
+      <div class="q-meta">
+        <div class="q-num">6</div>
+        <span class="q-tag">Burocracia del Dato</span>
+      </div>
+      <p class="q-title">¿Qué información tienes que capturar dos o tres veces en diferentes formatos o pantallas para que un proceso avance? (Ej: De la nota de remisión al inventario y luego a la factura)</p>
+      <p class="q-objetivo">🎯 Objetivo: Detectar ineficiencias de tiempo eliminables con automatización básica.</p>
+      <div class="field-group">
+        <label class="field-label" for="q6">Tu respuesta</label>
+        <textarea id="q6" data-qid="q6" data-seccion="Logística"
+          data-texto="¿Qué información tienes que capturar dos o tres veces en diferentes formatos o pantallas para que un proceso avance?"
+          placeholder="Describe los datos que se duplican y en qué sistemas ocurre..."></textarea>
+      </div>
+    </div>
+
+    <!-- Q7 -->
+    <div class="question-card" id="card-q7">
+      <div class="q-meta">
+        <div class="q-num">7</div>
+        <span class="q-tag">Multisitio</span>
+      </div>
+      <p class="q-title">¿Cómo se coordina actualmente el inventario y las órdenes entre las operaciones de Monterrey y Durango? ¿Existe visibilidad en tiempo real o se trabaja "a ciegas" entre sitios?</p>
+      <p class="q-objetivo">🎯 Objetivo: Mapear brechas de sincronización en operaciones multisitio.</p>
+      <div class="field-group">
+        <label class="field-label" for="q7">Tu respuesta</label>
+        <textarea id="q7" data-qid="q7" data-seccion="Logística"
+          data-texto="¿Cómo se coordina actualmente el inventario y las órdenes entre Monterrey y Durango?"
+          placeholder="Describe el mecanismo de coordinación y sus brechas..."></textarea>
+      </div>
+    </div>
+
+    <div class="section-actions">
+      <button class="btn btn-secondary" onclick="goToSection(1)">← Producción</button>
+      <button class="btn btn-primary" onclick="goToSection(3)">Siguiente: Admin/TI →</button>
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════
+       SECCIÓN 3: ADMIN / TI
+  ════════════════════════════════ -->
+  <div class="section-panel" id="panel-3">
+    <h2 class="section-title">🖥️ Administración y Sistemas</h2>
+    <p class="section-desc">Estado actual de los sistemas de información y el impacto en la operación.</p>
+
+    <!-- Q8 -->
+    <div class="question-card" id="card-q8">
+      <div class="q-meta">
+        <div class="q-num">8</div>
+        <span class="q-tag">Shadow IT</span>
+      </div>
+      <p class="q-title">¿Cuántos sistemas o softwares diferentes usan regularmente para hacer una sola tarea del principio al fin? (Ej: ERP + Excel + Email + WhatsApp para cerrar un pedido)</p>
+      <p class="q-objetivo">🎯 Objetivo: Cuantificar la fragmentación tecnológica real de la operación.</p>
+      <div class="field-group">
+        <label class="field-label" for="q8">Tu respuesta</label>
+        <textarea id="q8" data-qid="q8" data-seccion="Admin"
+          data-texto="¿Cuántos sistemas o softwares diferentes usan regularmente para hacer una sola tarea del principio al fin?"
+          placeholder="Lista los sistemas y el flujo de trabajo actual..."></textarea>
+      </div>
+    </div>
+
+    <!-- Q9 -->
+    <div class="question-card" id="card-q9">
+      <div class="q-meta">
+        <div class="q-num">9</div>
+        <span class="q-tag">Normativa</span>
+      </div>
+      <p class="q-title">Para cumplir con los reportes de certificación (AWPA, AREMA, FSC, PROFEPA), ¿el equipo genera la documentación de forma automática o es un proceso manual que genera estrés al cierre de auditorías?</p>
+      <p class="q-objetivo">🎯 Objetivo: Identificar el nivel de automatización en cumplimiento normativo crítico.</p>
+      <div class="field-group">
+        <label class="field-label" for="q9">Tu respuesta</label>
+        <textarea id="q9" data-qid="q9" data-seccion="Admin"
+          data-texto="Para los reportes de certificación (AWPA, AREMA, FSC, PROFEPA), ¿la documentación se genera automáticamente o es un proceso manual?"
+          placeholder="Describe el proceso de documentación para auditorías y el nivel de automatización..."></textarea>
+      </div>
+    </div>
+
+    <div class="section-actions">
+      <button class="btn btn-secondary" onclick="goToSection(2)">← Logística</button>
+      <button class="btn btn-primary" onclick="goToSection(4)">Siguiente: Calidad →</button>
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════
+       SECCIÓN 4: CALIDAD
+  ════════════════════════════════ -->
+  <div class="section-panel" id="panel-4">
+    <h2 class="section-title">🌿 Calidad y Visión de Futuro</h2>
+    <p class="section-desc">La perspectiva estratégica del equipo sobre qué mejorar primero.</p>
+
+    <!-- Q10 -->
+    <div class="question-card" id="card-q10">
+      <div class="q-meta">
+        <div class="q-num">10</div>
+        <span class="q-tag">Visión Estratégica</span>
+      </div>
+      <p class="q-title">Si tuvieras una varita mágica y pudieras cambiar UN SOLO proceso de la empresa mañana (el que más tiempo te roba o más errores genera), ¿cuál sería y por qué?</p>
+      <p class="q-objetivo">🎯 Objetivo: Identificar el quick-win de mayor impacto percibido por el equipo operativo.</p>
+      <div class="field-group">
+        <label class="field-label" for="q10">Tu respuesta</label>
+        <textarea id="q10" data-qid="q10" data-seccion="Calidad"
+          data-texto="Si pudieras cambiar UN SOLO proceso de la empresa mañana, ¿cuál sería y por qué?"
+          placeholder="Describe el proceso, por qué te afecta y cómo lo cambiarías..."></textarea>
+      </div>
+    </div>
+
+    <div class="section-actions">
+      <button class="btn btn-secondary" onclick="goToSection(3)">← Admin/TI</button>
+      <button class="btn btn-wood" onclick="finalizarDiagnostico()">✅ Finalizar Diagnóstico</button>
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════
+       PANEL FINAL
+  ════════════════════════════════ -->
+  <div class="section-panel" id="panel-finish">
+    <div class="finish-card">
+      <div class="finish-icon">🎯</div>
+      <h2 class="finish-title">¡Diagnóstico Completado!</h2>
+      <p class="finish-desc">
+        Tus respuestas han sido guardadas y procesadas.<br />
+        El equipo de Antigravity analizará los datos para generar el reporte de transformación digital.
+      </p>
+      <div style="display:flex; gap:12px; justify-content:center; flex-wrap:wrap;">
+        <button class="btn btn-secondary" onclick="reiniciarDiagnostico()">↩ Nuevo Diagnóstico</button>
+      </div>
+      <p class="text-suave mt-4" style="font-size:0.78rem;">
+        Sesión: <code id="session-display" style="color:var(--verde-claro);"></code>
+      </p>
+    </div>
+  </div>
+
+</div>
+<!-- /app -->
+
+<!-- ════════════════════════════════
+     ZONA ADMIN SECRETA (5 clicks en logo)
+════════════════════════════════ -->
+<div id="admin-secret-zone" class="hidden">
+  <div id="admin-panel">
+    <h3>🔐 Panel Administrador</h3>
+    <div style="display:flex; gap:12px; align-items:flex-end; flex-wrap:wrap;">
+      <div class="field-group" style="flex:1; min-width:200px;">
+        <label class="field-label" for="admin-password-input">Password de Acceso</label>
+        <input type="password" id="admin-password-input" placeholder="••••••••••••" maxlength="50" />
+      </div>
+      <button class="btn btn-secondary" onclick="verificarAdmin()">Verificar</button>
+    </div>
+    <div id="admin-export-zone" style="margin-top:16px; display:none;">
+      <div style="display:flex; gap:12px; flex-wrap:wrap;">
+        <button class="btn btn-wood" onclick="exportarMarkdown()" id="btn-exportar">
+          📄 Exportar Master Markdown
+        </button>
+        <button class="btn btn-secondary" onclick="exportarLocal()">
+          💾 Exportar Local (sin DB)
+        </button>
+      </div>
+      <p class="text-suave mt-4" style="font-size:0.78rem;">
+        ⚡ Conectado a Cloudflare D1 · Worker activo
+      </p>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div id="toast" role="alert" aria-live="polite"></div>
+
+<!-- ════════════════════════════════
+     JAVASCRIPT PRINCIPAL
+════════════════════════════════ -->
+<script>
+// ═══════════════════════════════════════════
+//  CONFIGURACIÓN
+// ═══════════════════════════════════════════
+
+// 🔧 REEMPLAZA ESTA URL con la URL de tu Cloudflare Worker desplegado
+const WORKER_URL = 'https://diagnostico-reforma.TU_CUENTA.workers.dev';
+const ADMIN_PASSWORD = 'Soberania2026';
+
+// Total de preguntas
+const TOTAL_PREGUNTAS = 10;
+
+// ═══════════════════════════════════════════
+//  ESTADO DE LA APLICACIÓN
+// ═══════════════════════════════════════════
+let currentSection = 0;
+let logoClickCount = 0;
+let logoClickTimeout = null;
+let userSession = null;
+let autosaveTimer = null;
+let isAdminUnlocked = false;
+
+// Inicializar o recuperar sesión
+function initSession() {
+  userSession = localStorage.getItem('glr_session');
+  if (!userSession) {
+    userSession = generateUUID();
+    localStorage.setItem('glr_session', userSession);
+  }
+  document.getElementById('session-display').textContent = userSession.slice(0, 18) + '…';
+
+  // Restaurar respuestas guardadas localmente
+  restaurarRespuestas();
+}
+
+function generateUUID() {
+  return ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c =>
+    (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
+  );
+}
+
+// ═══════════════════════════════════════════
+//  PROGRESO
+// ═══════════════════════════════════════════
+function actualizarProgreso() {
+  const inputs = document.querySelectorAll('textarea[data-qid]');
+  let respondidas = 0;
+  inputs.forEach(el => { if (el.value.trim().length >= 3) respondidas++; });
+  
+  const pct = Math.round((respondidas / TOTAL_PREGUNTAS) * 100);
+  document.getElementById('progress-fill').style.width = pct + '%';
+  document.getElementById('progress-label').textContent = `${respondidas} / ${TOTAL_PREGUNTAS}`;
+  document.getElementById('progress-fill').setAttribute('aria-valuenow', pct);
+
+  // Marcar tabs completados
+  const secciones = ['Ventas', 'Producción', 'Logística', 'Admin', 'Calidad'];
+  secciones.forEach((sec, i) => {
+    const secInputs = document.querySelectorAll(`textarea[data-seccion="${sec}"]`);
+    const todas = Array.from(secInputs).every(el => el.value.trim().length >= 3);
+    const check = document.getElementById('check-' + i);
+    const tab = document.getElementById('tab-' + i);
+    if (check) check.style.opacity = todas ? '1' : '0';
+    if (tab) {
+      if (todas) tab.classList.add('completed');
+      else tab.classList.remove('completed');
+    }
+  });
+
+  // Destacar tarjetas con respuesta
+  inputs.forEach(el => {
+    const card = document.getElementById('card-' + el.id);
+    if (card) {
+      if (el.value.trim().length >= 3) card.classList.add('has-answer');
+      else card.classList.remove('has-answer');
+    }
+  });
+}
+
+// ═══════════════════════════════════════════
+//  NAVEGACIÓN DE SECCIONES
+// ═══════════════════════════════════════════
+function goToSection(idx) {
+  // Guardar antes de cambiar
+  autoguardar();
+
+  // Ocultar panel actual, activar nuevo
+  document.querySelectorAll('.section-panel').forEach((p, i) => {
+    p.classList.toggle('active', i === idx);
+  });
+  document.querySelectorAll('.section-tab').forEach((t, i) => {
+    t.classList.toggle('active', i === idx);
+  });
+  currentSection = idx;
+
+  // Scroll al inicio del form
+  document.getElementById('section-nav').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+// ═══════════════════════════════════════════
+//  AUTO-GUARDADO (Cloudflare D1)
+// ═══════════════════════════════════════════
+function setAutosaveStatus(status) {
+  const dot = document.getElementById('autosave-dot');
+  const txt = document.getElementById('autosave-text');
+  dot.className = '';
+  switch (status) {
+    case 'saving': dot.classList.add('saving'); txt.textContent = 'Guardando…'; break;
+    case 'saved':  dot.classList.add('saved');  txt.textContent = 'Guardado ✓'; break;
+    case 'error':  dot.classList.add('error');  txt.textContent = 'Error al guardar'; break;
+    default:       txt.textContent = 'Listo'; break;
+  }
+}
+
+function recolectarRespuestas() {
+  const inputs = document.querySelectorAll('textarea[data-qid]');
+  const respuestas = [];
+  inputs.forEach(el => {
+    respuestas.push({
+      pregunta_id:   el.dataset.qid,
+      seccion:       el.dataset.seccion,
+      pregunta_texto: el.dataset.texto,
+      respuesta:     el.value.trim(),
+    });
+  });
+  return respuestas;
+}
+
+function guardarLocalmente(respuestas) {
+  const data = {};
+  respuestas.forEach(r => { data[r.pregunta_id] = r.respuesta; });
+  localStorage.setItem('glr_respuestas', JSON.stringify(data));
+}
+
+function restaurarRespuestas() {
+  const saved = JSON.parse(localStorage.getItem('glr_respuestas') || '{}');
+  Object.entries(saved).forEach(([qid, valor]) => {
+    const el = document.getElementById(qid);
+    if (el && valor) el.value = valor;
+  });
+  actualizarProgreso();
+}
+
+async function autoguardar() {
+  setAutosaveStatus('saving');
+  const respuestas = recolectarRespuestas();
+  guardarLocalmente(respuestas);
+
+  // Enviar al Worker de Cloudflare D1
+  try {
+    // Guardar respuestas
+    const res = await fetch(`${WORKER_URL}/save`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ user_session: userSession, respuestas }),
+    });
+
+    if (res.ok) {
+      setAutosaveStatus('saved');
+      setTimeout(() => setAutosaveStatus('idle'), 3000);
+    } else {
+      throw new Error('HTTP ' + res.status);
+    }
+  } catch (err) {
+    // Si el Worker no está configurado aún, guardamos solo localmente
+    console.warn('Worker no disponible, guardado local:', err.message);
+    setAutosaveStatus('saved'); // Mostrar como guardado (local)
+    setTimeout(() => setAutosaveStatus('idle'), 3000);
+  }
+}
+
+function debouncedAutoguardar() {
+  clearTimeout(autosaveTimer);
+  autosaveTimer = setTimeout(autoguardar, 1500);
+}
+
+// ═══════════════════════════════════════════
+//  FINALIZAR DIAGNÓSTICO
+// ═══════════════════════════════════════════
+async function finalizarDiagnostico() {
+  await autoguardar();
+
+  // Ocultar todos los paneles y tabs, mostrar finish
+  document.querySelectorAll('.section-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('panel-finish').classList.add('active');
+  document.getElementById('section-nav').style.display = 'none';
+
+  showToast('✅ ¡Diagnóstico guardado! Gracias por tu participación.', 'success');
+}
+
+function reiniciarDiagnostico() {
+  localStorage.removeItem('glr_session');
+  localStorage.removeItem('glr_respuestas');
+  window.location.reload();
+}
+
+// ═══════════════════════════════════════════
+//  PANEL ADMIN SECRETO — 5 CLICKS EN LOGO
+// ═══════════════════════════════════════════
+function inicializarSecretoLogo() {
+  const logoBtn = document.getElementById('logo-btn');
+  const logoIcon = document.getElementById('logo-icon');
+
+  logoBtn.addEventListener('click', () => {
+    logoClickCount++;
+    clearTimeout(logoClickTimeout);
+
+    if (logoClickCount >= 5) {
+      logoClickCount = 0;
+      logoIcon.classList.add('shake');
+      setTimeout(() => logoIcon.classList.remove('shake'), 500);
+      document.getElementById('admin-secret-zone').classList.remove('hidden');
+      showToast('🔐 Panel de administrador habilitado', 'info');
+      setTimeout(() => {
+        document.getElementById('admin-secret-zone').scrollIntoView({ behavior: 'smooth' });
+      }, 400);
+    }
+
+    // Reset contador después de 2 segundos de inactividad
+    logoClickTimeout = setTimeout(() => { logoClickCount = 0; }, 2000);
+  });
+
+  // Soporte teclado
+  logoBtn.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') logoBtn.click(); });
+}
+
+function verificarAdmin() {
+  const pwd = document.getElementById('admin-password-input').value;
+  if (pwd === ADMIN_PASSWORD) {
+    document.getElementById('admin-export-zone').style.display = 'block';
+    document.getElementById('admin-password-input').style.borderColor = 'var(--exito)';
+    isAdminUnlocked = true;
+    showToast('🔓 Acceso de administrador concedido.', 'success');
+  } else {
+    document.getElementById('admin-password-input').style.borderColor = 'var(--error)';
+    showToast('❌ Password incorrecto. Intenta de nuevo.', 'error');
+  }
+}
+
+// Tecla Enter en el campo de password
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('admin-password-input').addEventListener('keydown', e => {
+    if (e.key === 'Enter') verificarAdmin();
+  });
+});
+
+// ═══════════════════════════════════════════
+//  EXPORTAR MASTER MARKDOWN (Worker)
+// ═══════════════════════════════════════════
+async function exportarMarkdown() {
+  if (!isAdminUnlocked) return;
+  const btn = document.getElementById('btn-exportar');
+  btn.textContent = '⏳ Generando reporte…';
+  btn.disabled = true;
+
+  try {
+    const res = await fetch(`${WORKER_URL}/export?password=${ADMIN_PASSWORD}`, {
+      headers: { 'X-Admin-Password': ADMIN_PASSWORD },
+    });
+
+    if (!res.ok) {
+      const err = await res.json();
+      throw new Error(err.error || 'Error del servidor');
+    }
+
+    const md = await res.text();
+    descargarArchivo(md, `diagnostico-reforma-${Date.now()}.md`, 'text/markdown');
+    showToast('📄 Reporte Master descargado exitosamente.', 'success');
+  } catch (err) {
+    showToast('❌ Error: ' + err.message + '. Usa "Exportar Local" como alternativa.', 'error');
+  } finally {
+    btn.textContent = '📄 Exportar Master Markdown';
+    btn.disabled = false;
+  }
+}
+
+// Exportar desde datos locales (sin necesidad del Worker)
+function exportarLocal() {
+  if (!isAdminUnlocked) return;
+  const respuestas = recolectarRespuestas();
+  const now = new Date().toLocaleString('es-MX');
+
+  let md = `# 📊 Reporte Local: Diagnóstico Operativo\n`;
+  md += `**Empresa:** Grupo La Reforma / Forestal La Reforma\n`;
+  md += `**Generado:** ${now}\n`;
+  md += `**Sesión:** \`${userSession}\`\n\n---\n\n`;
+
+  // Agrupar por sección
+  const bySec = {};
+  respuestas.forEach(r => {
+    if (!bySec[r.seccion]) bySec[r.seccion] = [];
+    bySec[r.seccion].push(r);
+  });
+
+  for (const [sec, items] of Object.entries(bySec)) {
+    md += `## 📁 ${sec}\n\n`;
+    items.forEach(item => {
+      md += `**${item.pregunta_texto}**\n`;
+      md += `> ${item.respuesta || '_Sin respuesta_'}\n\n`;
+    });
+  }
+
+  md += `\n---\n*Exportado localmente — Antigravity AI System*\n`;
+  descargarArchivo(md, `diagnostico-local-${Date.now()}.md`, 'text/markdown');
+  showToast('💾 Reporte local descargado.', 'success');
+}
+
+function descargarArchivo(contenido, nombre, tipo) {
+  const blob = new Blob([contenido], { type: tipo });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = nombre;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+// ═══════════════════════════════════════════
+//  TOAST NOTIFICATIONS
+// ═══════════════════════════════════════════
+let toastTimeout = null;
+function showToast(msg, type = 'info') {
+  const toast = document.getElementById('toast');
+  const icons = { success: '✅', error: '❌', info: '💡', warning: '⚠️' };
+  toast.innerHTML = `<span>${icons[type] || '💡'}</span><span>${msg}</span>`;
+  toast.style.borderColor = type === 'error' ? 'rgba(229,115,115,0.4)' 
+    : type === 'success' ? 'rgba(102,187,106,0.4)' : 'var(--borde)';
+  toast.classList.add('show');
+  clearTimeout(toastTimeout);
+  toastTimeout = setTimeout(() => toast.classList.remove('show'), 4500);
+}
+
+// ═══════════════════════════════════════════
+//  NAVEGACIÓN DE TABS (evento)
+// ═══════════════════════════════════════════
+document.getElementById('section-nav').addEventListener('click', e => {
+  const btn = e.target.closest('.section-tab');
+  if (btn) goToSection(parseInt(btn.dataset.section));
+});
+
+// ═══════════════════════════════════════════
+//  LISTENERS EN TEXTAREAS
+// ═══════════════════════════════════════════
+document.querySelectorAll('textarea[data-qid]').forEach(el => {
+  el.addEventListener('input', () => {
+    actualizarProgreso();
+    debouncedAutoguardar();
+  });
+});
+
+// Guardar antes de cerrar pestaña
+window.addEventListener('beforeunload', () => {
+  guardarLocalmente(recolectarRespuestas());
+});
+
+// ═══════════════════════════════════════════
+//  BOOTSTRAP
+// ═══════════════════════════════════════════
+initSession();
+inicializarSecretoLogo();
+actualizarProgreso();
+
+// Auto-guardado inicial con los datos restaurados
+setTimeout(actualizarProgreso, 300);
+</script>
+
+</body>
+</html>
