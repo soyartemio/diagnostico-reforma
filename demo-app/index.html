@@ -16,7 +16,7 @@
           <div class="brand-mark">LR</div>
           <div>
             <p class="eyebrow">ERP 2026 Demo</p>
-            <h1>Compras y direccion en una app que se entiende.</h1>
+            <h1>Compras y direccion en una <br class="mobile-break" />app que se entiende.</h1>
             <p class="lead">Dashboard ejecutivo, aprobaciones, inventario critico, documentos y copiloto operativo en una demo jugable.</p>
           </div>
           <div class="sync-card">
@@ -73,6 +73,11 @@
 
         <main class="main">
           <header class="topbar">
+            <button class="mobile-menu-btn" id="mobileMenuBtn" type="button" aria-label="Abrir modulos" aria-expanded="false">
+              <span></span>
+              <span></span>
+              <span></span>
+            </button>
             <div>
               <p class="eyebrow" id="viewKicker">Centro de mando</p>
               <h2 id="viewTitle">Dashboard ejecutivo</h2>
@@ -252,6 +257,25 @@
           </section>
 
         </main>
+        <div class="mobile-nav-backdrop" id="mobileNavBackdrop" hidden></div>
+        <nav class="bottom-nav" aria-label="Accesos rapidos">
+          <button class="bottom-nav-item active" data-view="dashboard" type="button">
+            <span class="bottom-nav-icon">⌂</span>
+            <span>Inicio</span>
+          </button>
+          <button class="bottom-nav-item" data-view="compras" type="button">
+            <span class="bottom-nav-icon">✓</span>
+            <span>Compras</span>
+          </button>
+          <button class="bottom-nav-item" data-view="inventario" type="button">
+            <span class="bottom-nav-icon">▦</span>
+            <span>Inventario</span>
+          </button>
+          <button class="bottom-nav-item" data-view="cxp" type="button">
+            <span class="bottom-nav-icon">$</span>
+            <span>CxP</span>
+          </button>
+        </nav>
       </section>
     </div>
     <div class="toast" id="toast" role="status"></div>

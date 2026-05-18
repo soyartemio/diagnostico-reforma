@@ -165,8 +165,29 @@ function setView(viewName) {
   qsa(".view").forEach((el) => el.classList.remove("active"));
   qs(`#${view.el}`).classList.add("active");
   qsa(".nav-item").forEach((btn) => btn.classList.toggle("active", btn.dataset.view === viewName));
+  qsa(".bottom-nav-item").forEach((btn) => btn.classList.toggle("active", btn.dataset.view === viewName));
   qs("#viewTitle").textContent = view.title;
   qs("#viewKicker").textContent = view.kicker;
+  closeMobileNav();
+}
+
+function closeMobileNav() {
+  const workspace = qs("#workspace");
+  const menuBtn = qs("#mobileMenuBtn");
+  const backdrop = qs("#mobileNavBackdrop");
+  workspace?.classList.remove("mobile-nav-open");
+  if (menuBtn) menuBtn.setAttribute("aria-expanded", "false");
+  if (backdrop) backdrop.hidden = true;
+}
+
+function toggleMobileNav() {
+  const workspace = qs("#workspace");
+  const menuBtn = qs("#mobileMenuBtn");
+  const backdrop = qs("#mobileNavBackdrop");
+  const isOpen = !workspace?.classList.contains("mobile-nav-open");
+  workspace?.classList.toggle("mobile-nav-open", isOpen);
+  if (menuBtn) menuBtn.setAttribute("aria-expanded", String(isOpen));
+  if (backdrop) backdrop.hidden = !isOpen;
 }
 
 function getApprovedPurchases() {
@@ -1051,6 +1072,13 @@ function bindEvents() {
   qsa(".nav-item").forEach((btn) => {
     btn.addEventListener("click", () => setView(btn.dataset.view));
   });
+
+  qsa(".bottom-nav-item").forEach((btn) => {
+    btn.addEventListener("click", () => setView(btn.dataset.view));
+  });
+
+  qs("#mobileMenuBtn")?.addEventListener("click", toggleMobileNav);
+  qs("#mobileNavBackdrop")?.addEventListener("click", closeMobileNav);
 
   qs("#globalSearch")?.addEventListener("input", (event) => {
     renderCommandResults(event.target.value);
