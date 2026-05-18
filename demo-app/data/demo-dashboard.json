@@ -1,0 +1,160 @@
+{
+  "company": "Grupo La Reforma",
+  "lastSync": "2026-05-17T18:42:00-06:00",
+  "source": "Operacion demo",
+  "health": {
+    "mirror": 98,
+    "risk": "medio"
+  },
+  "kpis": [
+    {
+      "id": "ventas",
+      "label": "Ventas del mes",
+      "value": "$18.4M",
+      "delta": "+12.8%",
+      "tone": "good",
+      "why": "Tres pedidos industriales explican 61% del avance mensual.",
+      "items": [
+        "CFE Norte: $6.2M en postes tratados, embarque parcial esta semana.",
+        "Telecom Bajio: $3.1M en suministro programado, sin alertas de cobranza.",
+        "Constructoras regionales: $1.9M, margen arriba del promedio."
+      ],
+      "action": "Abrir expediente de pedidos con mayor margen."
+    },
+    {
+      "id": "compras",
+      "label": "Compras abiertas",
+      "value": "$4.7M",
+      "delta": "23 OC",
+      "tone": "watch",
+      "why": "Cinco ordenes concentran 78% del monto abierto.",
+      "items": [
+        "OC-260517-084 requiere autorizacion por variacion de precio.",
+        "Materia prima pendiente depende de fecha de entrega confirmada.",
+        "Tres OC menores pueden aprobarse en bloque si direccion lo permite."
+      ],
+      "action": "Revisar compras de alto impacto y pedir aclaracion donde falte evidencia."
+    },
+    {
+      "id": "cxc",
+      "label": "CxC vencida",
+      "value": "$2.1M",
+      "delta": "9 clientes",
+      "tone": "danger",
+      "why": "Dos clientes explican 73% de la cartera vencida.",
+      "items": [
+        "Cliente ferroviario: $920k, requiere complemento documental.",
+        "Infraestructura Norte: $610k, promesa de pago viernes.",
+        "Siete saldos menores pueden gestionarse por recordatorio automatico."
+      ],
+      "action": "Priorizar expedientes con factura, evidencia y contacto responsable."
+    },
+    {
+      "id": "cxp",
+      "label": "CxP proximos 7 dias",
+      "value": "$3.3M",
+      "delta": "15 pagos",
+      "tone": "watch",
+      "why": "La semana concentra pagos de quimicos y materia prima.",
+      "items": [
+        "Quimicos del Norte: $684k sujeto a autorizacion de compra.",
+        "Maderas Selectas: $1.24M con entrega programada.",
+        "Servicios industriales: $188k sin alerta de costo."
+      ],
+      "action": "Simular flujo de efectivo antes de aprobar compras de mayor variacion."
+    },
+    {
+      "id": "inventario",
+      "label": "Inventario critico",
+      "value": "7 SKU",
+      "delta": "2 urgentes",
+      "tone": "danger",
+      "why": "Los faltantes afectan pedidos comprometidos y compras abiertas.",
+      "items": [
+        "Pino dimensionado clase industrial: 4 dias de cobertura.",
+        "Preservante CCA: consumo alto por programa de tratamiento.",
+        "Herrajes especiales: proveedor con entrega parcial."
+      ],
+      "action": "Cruzar inventario comprometido con OC pendientes antes de prometer nuevas fechas."
+    },
+    {
+      "id": "cumplimiento",
+      "label": "Expedientes completos",
+      "value": "86%",
+      "delta": "+5 pts",
+      "tone": "good",
+      "why": "La capa de expedientes reduce documentos dispersos.",
+      "items": [
+        "14 expedientes ya tienen cotizacion, factura y evidencia.",
+        "5 expedientes requieren ficha tecnica o certificado anexo.",
+        "2 operaciones industriales tienen fecha limite esta semana."
+      ],
+      "action": "Completar evidencia faltante antes de cierre o embarque."
+    }
+  ],
+  "alerts": [
+    {
+      "id": "al-01",
+      "priority": "Alta",
+      "title": "OC con variacion mayor a historico",
+      "text": "Proveedor Quimicos del Norte presenta +14.8% contra ultima compra.",
+      "owner": "Compras"
+    },
+    {
+      "id": "al-02",
+      "priority": "Media",
+      "title": "Factura por vencer sin evidencia completa",
+      "text": "Expediente ferroviario requiere certificado anexo antes de cierre.",
+      "owner": "Cumplimiento"
+    },
+    {
+      "id": "al-03",
+      "priority": "Media",
+      "title": "Pedido con inventario comprometido",
+      "text": "Tres partidas dependen de recepcion programada esta semana.",
+      "owner": "Ventas"
+    }
+  ],
+  "mirrorTables": [
+    { "name": "Clientes", "rows": 1286, "status": "Sincronizado", "updated": "18:39" },
+    { "name": "Proveedores", "rows": 492, "status": "Sincronizado", "updated": "18:39" },
+    { "name": "Productos", "rows": 3418, "status": "Sincronizado", "updated": "18:41" },
+    { "name": "Ordenes de compra", "rows": 23872, "status": "Lectura OK", "updated": "18:42" },
+    { "name": "Facturas", "rows": 59410, "status": "Lectura OK", "updated": "18:42" },
+    { "name": "CxC / CxP", "rows": 18734, "status": "Validando saldos", "updated": "18:37" }
+  ],
+  "inventory": [
+    {
+      "sku": "Q-CCA-1200",
+      "name": "Solucion preservante CCA",
+      "coverage": "3 dias",
+      "reason": "Consumo alto por programa de tratamiento y OC pendiente de autorizacion.",
+      "impact": "Puede retrasar 4 pedidos industriales.",
+      "suggestion": "Aprobar OC-260517-084 o pedir ajuste de precio hoy."
+    },
+    {
+      "sku": "MP-PINO-12",
+      "name": "Pino dimensionado clase industrial",
+      "coverage": "4 dias",
+      "reason": "Inventario comprometido por pedidos programados.",
+      "impact": "Riesgo de prometer fechas sin material suficiente.",
+      "suggestion": "Confirmar entrega parcial de OC-260517-091."
+    },
+    {
+      "sku": "HER-FER-80",
+      "name": "Herrajes para embarque ferroviario",
+      "coverage": "6 dias",
+      "reason": "Proveedor confirmo entrega parcial.",
+      "impact": "Un expediente ferroviario queda incompleto.",
+      "suggestion": "Solicitar proveedor alterno y adjuntar evidencia."
+    },
+    {
+      "sku": "DOC-CERT-TR",
+      "name": "Certificados de tratamiento",
+      "coverage": "5 pendientes",
+      "reason": "Documentos faltantes en expedientes de cierre.",
+      "impact": "Cartera y embarques pueden detenerse por evidencia incompleta.",
+      "suggestion": "Asignar responsable por expediente desde cumplimiento."
+    }
+  ]
+}

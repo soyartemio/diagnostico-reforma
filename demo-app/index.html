@@ -1,0 +1,285 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#102f24" />
+    <title>Grupo La Reforma ERP 2026 Demo</title>
+    <link rel="manifest" href="manifest.webmanifest" />
+    <link rel="icon" href="assets/icon.svg" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="app-shell" id="app">
+      <section class="login-view" id="loginView">
+        <div class="login-art">
+          <div class="brand-mark">LR</div>
+          <div>
+            <p class="eyebrow">ERP 2026 Demo</p>
+            <h1>Compras y direccion en una app que se entiende.</h1>
+            <p class="lead">Dashboard ejecutivo, aprobaciones, inventario critico, documentos y copiloto operativo en una demo jugable.</p>
+          </div>
+          <div class="sync-card">
+            <span>Demo lista</span>
+            <strong>10 OC</strong>
+            <small>Aprobar, rechazar, revisar documentos y ver motivos.</small>
+          </div>
+        </div>
+        <form class="login-panel" id="loginForm">
+          <p class="eyebrow">Acceso demo</p>
+          <h2>Direccion ejecutiva</h2>
+          <label>
+            Usuario
+            <input value="demo@grupolareforma.com" autocomplete="username" />
+          </label>
+          <label>
+            Perfil
+            <select>
+              <option>Director general</option>
+              <option>Compras</option>
+              <option>Finanzas</option>
+            </select>
+          </label>
+          <button type="submit">Entrar a la demo</button>
+          <p class="fine-print">Sin datos reales. Sin escritura a sistemas reales. Flujo de prueba.</p>
+        </form>
+      </section>
+
+      <section class="workspace hidden" id="workspace">
+        <aside class="sidebar">
+          <div class="side-brand">
+            <div class="brand-mark small">LR</div>
+            <div>
+              <strong>Grupo La Reforma</strong>
+              <span>ERP 2026 Demo</span>
+            </div>
+          </div>
+          <nav class="nav-list" aria-label="Vistas">
+            <button class="nav-item active" data-view="dashboard">Dashboard</button>
+            <button class="nav-item" data-view="ventas">Ventas</button>
+            <button class="nav-item" data-view="compras">Compras</button>
+            <button class="nav-item" data-view="inventario">Inventario</button>
+            <button class="nav-item muted-module" disabled>Manufactura</button>
+            <button class="nav-item muted-module" disabled>Facturacion</button>
+            <button class="nav-item muted-module" disabled>CxC</button>
+            <button class="nav-item" data-view="cxp">CxP</button>
+            <button class="nav-item muted-module" disabled>Bancos</button>
+          </nav>
+          <div class="side-note">
+            <span class="status-dot"></span>
+            Demo operativa con datos ficticios.
+          </div>
+        </aside>
+
+        <main class="main">
+          <header class="topbar">
+            <div>
+              <p class="eyebrow" id="viewKicker">Centro de mando</p>
+              <h2 id="viewTitle">Dashboard ejecutivo</h2>
+            </div>
+            <div class="command-center">
+              <input id="globalSearch" type="search" placeholder="Buscar OC, proveedor, SKU..." autocomplete="off" />
+              <div class="command-results" id="commandResults" hidden></div>
+            </div>
+            <div class="top-actions">
+              <button class="ghost notification-trigger" id="notifyBtn">Alertas <span id="notifyCount">0</span></button>
+              <button class="ghost" id="installBtn" hidden>Instalar PWA</button>
+              <button class="ghost" id="resetBtn">Reiniciar demo</button>
+            </div>
+            <div class="notification-panel" id="notificationPanel" hidden></div>
+          </header>
+
+          <section class="view active" id="dashboardView">
+            <div class="hero-grid focus-only">
+              <article class="ai-card">
+                <p class="eyebrow">Copiloto operativo</p>
+                <h3>Hoy requiere atencion</h3>
+                <div class="today-list" id="aiDecisions"></div>
+              </article>
+            </div>
+            <div class="embedded-intel-grid">
+              <article class="panel intelligence-output">
+                <div class="panel-head">
+                  <div>
+                    <p class="eyebrow">GLR Intelligence</p>
+                    <h3>Brief operativo</h3>
+                  </div>
+                  <button class="text-link" data-intel="brief">Regenerar</button>
+                </div>
+                <div id="intelResult"></div>
+              </article>
+              <article class="panel anomaly-workbench">
+                <div class="panel-head">
+                  <div>
+                    <p class="eyebrow">GLR Intelligence</p>
+                    <h3>Radar de anomalias</h3>
+                  </div>
+                  <span id="anomalyCount"></span>
+                </div>
+                <div id="anomalyList"></div>
+                <div id="anomalyDetail"></div>
+              </article>
+            </div>
+            <div class="kpi-grid" id="kpiGrid"></div>
+            <article class="panel drilldown-panel" id="kpiDrilldown"></article>
+            <div class="split-grid">
+              <article class="panel">
+                <div class="panel-head">
+                  <h3>Alertas ejecutivas</h3>
+                  <span id="syncStamp">Demo operativa</span>
+                </div>
+                <div class="alerts-list" id="alertsList"></div>
+              </article>
+              <article class="panel">
+                <div class="panel-head">
+                  <h3>Inbox de compras</h3>
+                  <button class="text-link" data-view-jump="compras">Ver flujo</button>
+                </div>
+                <div class="mini-inbox" id="miniInbox"></div>
+              </article>
+            </div>
+          </section>
+
+          <section class="view" id="comprasView">
+            <div class="purchase-layout">
+              <article class="panel inbox-panel">
+                <div class="panel-head">
+                  <h3>Compras por aprobar</h3>
+                  <span>Flujo activo</span>
+                </div>
+                <div class="purchase-list" id="purchaseList"></div>
+              </article>
+              <article class="panel detail-panel" id="purchaseDetail"></article>
+            </div>
+            <div class="completion-banner" id="completionBanner"></div>
+            <article class="panel decision-log-panel">
+              <div class="panel-head">
+                <h3>Bitacora de decisiones</h3>
+                <span>Se actualiza al jugar</span>
+              </div>
+              <div id="decisionLog"></div>
+            </article>
+          </section>
+
+          <section class="view" id="inventarioView">
+            <div class="mirror-grid">
+              <article class="command-card">
+                <p class="eyebrow">Inventario critico</p>
+                <h3>Ver motivos, impacto y accion sin abrir 5 reportes.</h3>
+                <p>Cada SKU puede mostrar cobertura, pedidos afectados, proveedor sugerido y compras relacionadas.</p>
+              </article>
+              <article class="panel">
+                <div class="panel-head">
+                  <h3>SKU con atencion</h3>
+                  <span>Activo</span>
+                </div>
+                <div class="table-list" id="inventoryList"></div>
+              </article>
+            </div>
+            <div class="split-grid operational-grid">
+              <article class="panel">
+                <div class="panel-head">
+                  <h3>Movimientos recientes</h3>
+                  <span>Hoy</span>
+                </div>
+                <div id="inventoryMovements"></div>
+              </article>
+              <article class="panel">
+                <div class="panel-head">
+                  <h3>Compras ligadas</h3>
+                  <span>Impacto directo</span>
+                </div>
+                <div id="inventoryLinkedPurchases"></div>
+              </article>
+            </div>
+          </section>
+
+          <section class="view" id="ventasView">
+            <div class="module-hero">
+              <div>
+                <p class="eyebrow">Ventas</p>
+                <h3>Pedidos, cotizaciones y margen con inventario a la vista.</h3>
+                <p>Ventas se conecta con disponibilidad, promesas de entrega y compras pendientes.</p>
+              </div>
+              <button class="primary-action compact-action" data-view-jump="inventario">Ver inventario critico</button>
+            </div>
+            <div class="split-grid operational-grid">
+              <article class="panel">
+                <div class="panel-head">
+                  <h3>Pedidos vivos</h3>
+                  <span id="salesSummary"></span>
+                </div>
+                <div id="salesOrders"></div>
+              </article>
+              <article class="panel">
+                <div class="panel-head">
+                  <h3>Cotizaciones activas</h3>
+                  <span>Pipeline</span>
+                </div>
+                <div id="salesQuotes"></div>
+              </article>
+            </div>
+          </section>
+
+          <section class="view" id="cxpView">
+            <div class="module-hero cxp-hero">
+              <div>
+                <p class="eyebrow">Cuentas por pagar</p>
+                <h3>Lo aprobado en Compras aparece aquí como compromiso financiero.</h3>
+                <p>Cuando apruebas una OC, el compromiso aparece con vencimiento, proveedor y origen.</p>
+              </div>
+              <div class="cxp-total">
+                <span>Compromisos visibles</span>
+                <strong id="cxpTotal">$0</strong>
+              </div>
+            </div>
+            <div class="split-grid operational-grid">
+              <article class="panel">
+                <div class="panel-head">
+                  <h3>CxP por programar</h3>
+                  <span id="cxpCount"></span>
+                </div>
+                <div id="payablesList"></div>
+              </article>
+              <article class="panel">
+                <div class="panel-head">
+                  <h3>Flujo de 7 dias</h3>
+                  <span>Hoy</span>
+                </div>
+                <div id="cashFlowList"></div>
+              </article>
+            </div>
+          </section>
+
+        </main>
+      </section>
+    </div>
+    <div class="toast" id="toast" role="status"></div>
+
+    <div class="tour-overlay" id="tourOverlay" hidden>
+      <div class="tour-card">
+        <button class="tour-close" data-tour-close aria-label="Cerrar tour">×</button>
+        <span id="tourStepLabel"></span>
+        <h2 id="tourTitle"></h2>
+        <p id="tourBody"></p>
+        <div class="tour-actions">
+          <button class="ghost" data-tour-close>Cerrar</button>
+          <button class="primary-action" data-tour-next>Siguiente</button>
+        </div>
+      </div>
+    </div>
+
+    <dialog class="document-modal" id="documentModal">
+      <div class="modal-card">
+        <button class="modal-close" id="modalClose" aria-label="Cerrar documento">×</button>
+        <p class="eyebrow" id="modalType"></p>
+        <h2 id="modalTitle"></h2>
+        <div class="modal-meta" id="modalMeta"></div>
+        <p id="modalSummary"></p>
+        <div class="modal-fields" id="modalFields"></div>
+      </div>
+    </dialog>
+
+    <script src="app.js" type="module"></script>
+  </body>
+</html>

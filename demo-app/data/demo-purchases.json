@@ -1,0 +1,346 @@
+[
+  {
+    "id": "OC-260517-084",
+    "status": "Pendiente",
+    "priority": "Alta",
+    "supplier": "Quimicos del Norte",
+    "category": "Tratamiento",
+    "amount": 684250,
+    "currency": "MXN",
+    "buyer": "Compras corporativas",
+    "requestedBy": "Planta Durango",
+    "variation": 14.8,
+    "lastAmount": 596200,
+    "paymentTerm": "30 dias",
+    "erpReference": "ERP-PO-91842",
+    "risk": "Alto",
+    "aiSummary": "La compra supera el historico reciente y afecta CxP de la semana 22. Conviene pedir aclaracion de precio o evidencia de mercado antes de aprobar.",
+    "items": [
+      { "sku": "Q-CCA-1200", "name": "Solucion preservante CCA", "qty": 12, "unit": "Tambor", "price": 42100 },
+      { "sku": "Q-FIX-045", "name": "Fijador industrial", "qty": 18, "unit": "Cubeta", "price": 9910 }
+    ],
+    "timeline": [
+      { "label": "Requisicion creada", "time": "08:14", "by": "Planta Durango" },
+      { "label": "Cotizacion adjunta", "time": "09:05", "by": "Compras" },
+      { "label": "Comparativo generado", "time": "10:22", "by": "Sistema demo" },
+      { "label": "Pendiente direccion", "time": "11:10", "by": "Workflow" }
+    ],
+    "documents": [
+      {
+        "type": "Cotizacion",
+        "title": "Cotizacion QN-4481",
+        "issuer": "Quimicos del Norte",
+        "date": "2026-05-17",
+        "summary": "Precio unitario actualizado por lote de preservante CCA y fijador industrial. Incluye entrega a planta Durango.",
+        "fields": [
+          "Subtotal: $589,871 MXN",
+          "IVA: $94,379 MXN",
+          "Vigencia: 7 dias",
+          "Entrega: 72 horas despues de autorizacion"
+        ]
+      },
+      {
+        "type": "Comparativo",
+        "title": "Comparativo historico",
+        "issuer": "Historico demo",
+        "date": "2026-05-17",
+        "summary": "La compra esta 14.8% arriba de la ultima OC comparable y 9.3% arriba del promedio trimestral.",
+        "fields": [
+          "Ultima compra: $596,200 MXN",
+          "Promedio trimestre: $626,000 MXN",
+          "Variacion detectada: +$88,050 MXN",
+          "Motivo sugerido: pedir soporte de mercado"
+        ]
+      },
+      {
+        "type": "Ficha tecnica",
+        "title": "Ficha tecnica CCA-1200",
+        "issuer": "Proveedor",
+        "date": "2026-04-28",
+        "summary": "Producto preservante para tratamiento industrial de madera. La ficha queda ligada al expediente y no se pierde en correo.",
+        "fields": [
+          "Uso: tratamiento a presion",
+          "Presentacion: tambor",
+          "Lote proveedor: QN-CCA-26A",
+          "Estatus: vigente"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "OC-260517-091",
+    "status": "Pendiente",
+    "priority": "Media",
+    "supplier": "Maderas Selectas del Pacifico",
+    "category": "Materia prima",
+    "amount": 1248000,
+    "currency": "MXN",
+    "buyer": "Abastecimiento",
+    "requestedBy": "Patio industrial",
+    "variation": 4.2,
+    "lastAmount": 1197600,
+    "paymentTerm": "15 dias",
+    "erpReference": "ERP-PO-91877",
+    "risk": "Medio",
+    "aiSummary": "Variacion moderada. La compra esta ligada a pedidos con inventario comprometido; aprobar libera abastecimiento, pero debe validarse fecha de entrega.",
+    "items": [
+      { "sku": "MP-PINO-12", "name": "Pino dimensionado clase industrial", "qty": 620, "unit": "Pieza", "price": 1470 },
+      { "sku": "MP-EST-04", "name": "Estiba y maniobra", "qty": 1, "unit": "Servicio", "price": 33600 }
+    ],
+    "timeline": [
+      { "label": "Requisicion creada", "time": "07:40", "by": "Patio industrial" },
+      { "label": "Inventario revisado", "time": "08:18", "by": "Almacen" },
+      { "label": "Pendiente direccion", "time": "09:32", "by": "Workflow" }
+    ],
+    "documents": [
+      {
+        "type": "Cotizacion",
+        "title": "Cotizacion MSP-2207",
+        "issuer": "Maderas Selectas del Pacifico",
+        "date": "2026-05-16",
+        "summary": "Suministro de pino dimensionado para cubrir pedidos comprometidos de la siguiente semana.",
+        "fields": ["Subtotal: $1,075,862 MXN", "IVA: $172,138 MXN", "Entrega: parcial en 5 dias", "Condicion: precio sujeto a disponibilidad"]
+      },
+      {
+        "type": "Programa",
+        "title": "Programa de entrega",
+        "issuer": "Abastecimiento",
+        "date": "2026-05-17",
+        "summary": "La recepcion se divide en dos viajes para no saturar patio industrial.",
+        "fields": ["Viaje 1: 380 piezas", "Viaje 2: 240 piezas", "Recepcion: patio industrial", "Riesgo: confirmar transporte"]
+      },
+      {
+        "type": "Inventario",
+        "title": "Inventario comprometido",
+        "issuer": "Inventario demo",
+        "date": "2026-05-17",
+        "summary": "La compra cubre pedidos con material comprometido y reduce riesgo de promesa incumplida.",
+        "fields": ["Cobertura actual: 4 dias", "Cobertura con compra: 13 dias", "Pedidos ligados: 6", "Alerta: no prometer excedentes"]
+      }
+    ]
+  },
+  {
+    "id": "OC-260517-097",
+    "status": "Pendiente",
+    "priority": "Baja",
+    "supplier": "Servicios Industriales Laguna",
+    "category": "Mantenimiento",
+    "amount": 187900,
+    "currency": "MXN",
+    "buyer": "Compras planta",
+    "requestedBy": "Operacion",
+    "variation": -1.9,
+    "lastAmount": 191500,
+    "paymentTerm": "Contado",
+    "erpReference": "ERP-PO-91883",
+    "risk": "Bajo",
+    "aiSummary": "Compra dentro del rango historico. No se detectan alertas de costo; requiere confirmar disponibilidad de tecnico.",
+    "items": [
+      { "sku": "SER-MEC-08", "name": "Servicio tecnico programado", "qty": 1, "unit": "Servicio", "price": 187900 }
+    ],
+    "timeline": [
+      { "label": "Solicitud creada", "time": "12:04", "by": "Operacion" },
+      { "label": "Proveedor validado", "time": "12:31", "by": "Compras" },
+      { "label": "Pendiente aprobacion", "time": "13:02", "by": "Workflow" }
+    ],
+    "documents": [
+      {
+        "type": "Servicio",
+        "title": "Orden de servicio SI-882",
+        "issuer": "Servicios Industriales Laguna",
+        "date": "2026-05-17",
+        "summary": "Servicio tecnico programado con alcance cerrado y costo dentro de historico.",
+        "fields": ["Subtotal: $161,983 MXN", "IVA: $25,917 MXN", "Duracion: 1 jornada", "Garantia: 30 dias"]
+      },
+      {
+        "type": "Proveedor",
+        "title": "Validacion proveedor",
+        "issuer": "Compras planta",
+        "date": "2026-05-17",
+        "summary": "Proveedor activo, sin alertas de cumplimiento y con desempeno historico aceptable.",
+        "fields": ["Estatus: activo", "Incidencias: 0 en 90 dias", "Evaluacion: 92/100", "Cuenta: validada"]
+      }
+    ]
+  },
+  {
+    "id": "OC-260517-102",
+    "status": "Pendiente",
+    "priority": "Alta",
+    "supplier": "Herrajes Industriales del Bajio",
+    "category": "Embarques",
+    "amount": 356800,
+    "currency": "MXN",
+    "buyer": "Logistica",
+    "requestedBy": "Embarques",
+    "variation": 11.4,
+    "lastAmount": 320200,
+    "paymentTerm": "30 dias",
+    "erpReference": "ERP-PO-91891",
+    "risk": "Alto",
+    "aiSummary": "Compra necesaria para un expediente ferroviario, pero el precio subio 11.4%. Conviene pedir comparativo o segundo proveedor antes de liberar.",
+    "items": [{ "sku": "HER-FER-80", "name": "Herrajes para embarque ferroviario", "qty": 80, "unit": "Set", "price": 4460 }],
+    "timeline": [
+      { "label": "Solicitud creada", "time": "09:11", "by": "Embarques" },
+      { "label": "Impacto detectado", "time": "09:30", "by": "Sistema demo" },
+      { "label": "Pendiente autorizacion", "time": "09:46", "by": "Workflow" }
+    ],
+    "documents": [
+      { "type": "Cotizacion", "title": "Cotizacion HIB-771", "issuer": "Herrajes Industriales del Bajio", "date": "2026-05-17", "summary": "Cotizacion para herrajes especiales ligados a expediente ferroviario.", "fields": ["Subtotal: $307,586 MXN", "IVA: $49,214 MXN", "Entrega: 4 dias", "Vigencia: 5 dias"] },
+      { "type": "Ficha tecnica", "title": "Ficha herraje ferroviario", "issuer": "Proveedor", "date": "2026-05-15", "summary": "Documento tecnico para validar compatibilidad con el pedido.", "fields": ["Material: acero galvanizado", "Uso: sujecion", "Estatus: pendiente validacion", "Responsable: calidad"] }
+    ]
+  },
+  {
+    "id": "OC-260517-108",
+    "status": "Pendiente",
+    "priority": "Media",
+    "supplier": "Transportes Sierra Madre",
+    "category": "Logistica",
+    "amount": 92500,
+    "currency": "MXN",
+    "buyer": "Logistica",
+    "requestedBy": "Ventas",
+    "variation": 2.1,
+    "lastAmount": 90600,
+    "paymentTerm": "15 dias",
+    "erpReference": "ERP-PO-91903",
+    "risk": "Medio",
+    "aiSummary": "Costo dentro de rango; la prioridad viene por fecha de entrega comprometida. Aprobar libera ventana de embarque.",
+    "items": [{ "sku": "LOG-FLT-01", "name": "Flete regional", "qty": 1, "unit": "Viaje", "price": 92500 }],
+    "timeline": [
+      { "label": "Pedido ligado", "time": "10:15", "by": "Ventas" },
+      { "label": "Ruta confirmada", "time": "10:38", "by": "Logistica" },
+      { "label": "Pendiente aprobacion", "time": "10:50", "by": "Workflow" }
+    ],
+    "documents": [
+      { "type": "Cotizacion", "title": "Flete TSM-184", "issuer": "Transportes Sierra Madre", "date": "2026-05-17", "summary": "Flete regional para embarque comprometido.", "fields": ["Ruta: Durango - Monterrey", "Unidad: plataforma", "Seguro: incluido", "Salida: martes"] }
+    ]
+  },
+  {
+    "id": "OC-260517-113",
+    "status": "Pendiente",
+    "priority": "Baja",
+    "supplier": "Papeleria Corporativa Norte",
+    "category": "Administracion",
+    "amount": 28400,
+    "currency": "MXN",
+    "buyer": "Administracion",
+    "requestedBy": "Oficinas",
+    "variation": -3.2,
+    "lastAmount": 29340,
+    "paymentTerm": "Contado",
+    "erpReference": "ERP-PO-91912",
+    "risk": "Bajo",
+    "aiSummary": "Compra menor, por debajo del historico. Puede aprobarse sin impacto relevante.",
+    "items": [{ "sku": "ADM-PAP-01", "name": "Insumos administrativos", "qty": 1, "unit": "Lote", "price": 28400 }],
+    "timeline": [
+      { "label": "Solicitud creada", "time": "11:01", "by": "Oficinas" },
+      { "label": "Proveedor validado", "time": "11:04", "by": "Compras" }
+    ],
+    "documents": [
+      { "type": "Cotizacion", "title": "Cotizacion PCN-55", "issuer": "Papeleria Corporativa Norte", "date": "2026-05-17", "summary": "Insumos administrativos de reposicion.", "fields": ["Subtotal: $24,483 MXN", "IVA: $3,917 MXN", "Entrega: inmediata", "Estatus: validada"] }
+    ]
+  },
+  {
+    "id": "OC-260517-119",
+    "status": "Pendiente",
+    "priority": "Alta",
+    "supplier": "Energia y Calderas del Norte",
+    "category": "Servicios",
+    "amount": 512600,
+    "currency": "MXN",
+    "buyer": "Operacion",
+    "requestedBy": "Planta",
+    "variation": 8.6,
+    "lastAmount": 472000,
+    "paymentTerm": "30 dias",
+    "erpReference": "ERP-PO-91918",
+    "risk": "Alto",
+    "aiSummary": "Servicio critico con variacion relevante. El sistema recomienda aprobar solo con alcance firmado y evidencia tecnica.",
+    "items": [{ "sku": "SER-CAL-20", "name": "Servicio a caldera industrial", "qty": 1, "unit": "Servicio", "price": 512600 }],
+    "timeline": [
+      { "label": "Solicitud urgente", "time": "12:12", "by": "Planta" },
+      { "label": "Alcance recibido", "time": "12:40", "by": "Proveedor" },
+      { "label": "Riesgo marcado", "time": "12:46", "by": "GLR Intelligence" }
+    ],
+    "documents": [
+      { "type": "Alcance", "title": "Alcance tecnico ECN-209", "issuer": "Energia y Calderas del Norte", "date": "2026-05-17", "summary": "Servicio critico con actividades y garantias detalladas.", "fields": ["Paro estimado: 6 horas", "Garantia: 45 dias", "Incluye refacciones: si", "Validacion: pendiente"] },
+      { "type": "Comparativo", "title": "Historico de servicios", "issuer": "Base demo", "date": "2026-05-17", "summary": "El costo sube 8.6% contra servicio comparable.", "fields": ["Ultimo: $472,000", "Actual: $512,600", "Diferencia: $40,600", "Recomendacion: negociar"] }
+    ]
+  },
+  {
+    "id": "OC-260517-124",
+    "status": "Pendiente",
+    "priority": "Media",
+    "supplier": "Uniformes del Norte",
+    "category": "Seguridad",
+    "amount": 76800,
+    "currency": "MXN",
+    "buyer": "RH",
+    "requestedBy": "Seguridad industrial",
+    "variation": 0.8,
+    "lastAmount": 76200,
+    "paymentTerm": "15 dias",
+    "erpReference": "ERP-PO-91926",
+    "risk": "Bajo",
+    "aiSummary": "Compra dentro de rango y con evidencia completa. Candidata a aprobacion rapida.",
+    "items": [{ "sku": "SEG-UNI-02", "name": "Uniformes seguridad industrial", "qty": 64, "unit": "Set", "price": 1200 }],
+    "timeline": [
+      { "label": "Solicitud creada", "time": "13:15", "by": "Seguridad" },
+      { "label": "Tallas adjuntas", "time": "13:31", "by": "RH" }
+    ],
+    "documents": [
+      { "type": "Cotizacion", "title": "Uniformes UN-920", "issuer": "Uniformes del Norte", "date": "2026-05-17", "summary": "Uniformes y equipo de seguridad por reposicion.", "fields": ["Cantidad: 64 sets", "Entrega: 8 dias", "Incluye bordado: si", "Estatus: completo"] }
+    ]
+  },
+  {
+    "id": "OC-260517-130",
+    "status": "Pendiente",
+    "priority": "Media",
+    "supplier": "Refacciones Maquinaria Pesada",
+    "category": "Refacciones",
+    "amount": 244900,
+    "currency": "MXN",
+    "buyer": "Operacion",
+    "requestedBy": "Patio",
+    "variation": 6.7,
+    "lastAmount": 229500,
+    "paymentTerm": "30 dias",
+    "erpReference": "ERP-PO-91931",
+    "risk": "Medio",
+    "aiSummary": "Refacciones necesarias para continuidad. Variacion aceptable si se confirma disponibilidad inmediata.",
+    "items": [{ "sku": "REF-MAQ-77", "name": "Kit refacciones equipo patio", "qty": 1, "unit": "Kit", "price": 244900 }],
+    "timeline": [
+      { "label": "Falla reportada", "time": "14:02", "by": "Patio" },
+      { "label": "Stock consultado", "time": "14:20", "by": "Compras" },
+      { "label": "Pendiente aprobacion", "time": "14:30", "by": "Workflow" }
+    ],
+    "documents": [
+      { "type": "Cotizacion", "title": "RMP-1174", "issuer": "Refacciones Maquinaria Pesada", "date": "2026-05-17", "summary": "Kit completo de refacciones para continuidad operativa.", "fields": ["Entrega: 24 horas", "Garantia: fabricante", "Stock: confirmado", "Urgencia: media"] }
+    ]
+  },
+  {
+    "id": "OC-260517-136",
+    "status": "Pendiente",
+    "priority": "Baja",
+    "supplier": "Laboratorio Calidad Forestal",
+    "category": "Calidad",
+    "amount": 64800,
+    "currency": "MXN",
+    "buyer": "Calidad",
+    "requestedBy": "Cumplimiento",
+    "variation": 1.3,
+    "lastAmount": 63950,
+    "paymentTerm": "15 dias",
+    "erpReference": "ERP-PO-91940",
+    "risk": "Bajo",
+    "aiSummary": "Servicio de evidencia tecnica ligado a expedientes. Recomendado aprobar para cerrar documentacion.",
+    "items": [{ "sku": "CAL-LAB-02", "name": "Pruebas y certificado tecnico", "qty": 3, "unit": "Lote", "price": 21600 }],
+    "timeline": [
+      { "label": "Expediente detectado", "time": "15:12", "by": "Cumplimiento" },
+      { "label": "Proveedor validado", "time": "15:20", "by": "Calidad" }
+    ],
+    "documents": [
+      { "type": "Servicio", "title": "Pruebas LCF-302", "issuer": "Laboratorio Calidad Forestal", "date": "2026-05-17", "summary": "Pruebas tecnicas para completar expedientes de cliente.", "fields": ["Lotes: 3", "Entrega resultados: 72 horas", "Certificado: digital", "Estatus: listo"] }
+    ]
+  }
+]
