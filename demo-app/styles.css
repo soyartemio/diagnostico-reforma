@@ -2252,7 +2252,7 @@ button:focus-visible {
   .topbar {
     height: auto;
     display: grid;
-    grid-template-columns: 42px 1fr;
+    grid-template-columns: 1fr 42px;
     gap: 12px;
     align-items: flex-start;
     margin-bottom: 16px;
