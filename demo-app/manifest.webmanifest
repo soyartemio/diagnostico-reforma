@@ -1,6 +1,6 @@
 {
-  "name": "Grupo La Reforma ERP 2026 Demo",
-  "short_name": "Reforma ERP",
+  "name": "Arbor ERP Demo",
+  "short_name": "Arbor",
   "description": "Demo PWA de dashboards, compras, inventario e inteligencia operativa.",
   "start_url": "./",
   "display": "standalone",

@@ -668,7 +668,7 @@ function purchaseDetailMarkup(purchase, decision) {
       <span>${purchase.variation > 0 ? "+" : ""}${purchase.variation}% vs ultima compra</span>
     </div>
     <div class="ai-summary">
-      <strong>GLR Intelligence:</strong> ${purchase.aiSummary}
+      <strong>Arbor Intelligence:</strong> ${purchase.aiSummary}
     </div>
     ${renderActionRow(purchase, isDecided)}
     <section class="decision-cockpit">
@@ -694,7 +694,7 @@ function purchaseDetailMarkup(purchase, decision) {
     </section>
     <section class="glr-panel">
       <div>
-        <p class="eyebrow">GLR Intelligence</p>
+        <p class="eyebrow">Arbor Intelligence</p>
         <h3>${riskScore(purchase)} puntos de riesgo</h3>
         <p>${purchase.risk === "Alto" ? "Requiere explicacion antes de aprobar." : purchase.risk === "Medio" ? "Puede aprobarse si se confirma evidencia clave." : "Candidata a aprobacion rapida."}</p>
       </div>
@@ -1155,7 +1155,7 @@ function bindEvents() {
     const intelBtn = event.target.closest("[data-intel]");
     if (intelBtn) {
       renderIntelligence(intelBtn.dataset.intel);
-      showToast("GLR Intelligence actualizo el analisis.");
+      showToast("Arbor Intelligence actualizo el analisis.");
     }
 
     const actionBtn = event.target.closest("[data-action]");

@@ -21,7 +21,7 @@ Demo web/PWA para presentar compras, direccion, inventario e inteligencia operat
 - El expediente se abre debajo de la tarjeta seleccionada para evitar saltos y mantener el contexto, tanto en web como en iPhone.
 - Inventario critico con motivos, impacto, movimientos recientes y compras ligadas.
 - Modulo CxP con compromisos por programar y flujo de 7 dias.
-- GLR Intelligence integrado dentro del sistema: brief ejecutivo, riesgo automatico, mensaje a proveedor, inventario predictivo, documentos faltantes, radar de anomalias y bitacora.
+- Arbor Intelligence integrado dentro del sistema: brief ejecutivo, riesgo automatico, mensaje a proveedor, inventario predictivo, documentos faltantes, radar de anomalias y bitacora.
 
 ## Criterios UX aplicados
 
@@ -82,5 +82,5 @@ En este equipo el intento automatico quedo bloqueado porque Wrangler requiere `C
 - No usa datos reales.
 - No usa credenciales reales.
 - No se conecta a ningun sistema real.
-- GLR Intelligence es simulado/local para evitar fallas durante la presentacion.
+- Arbor Intelligence es simulado/local para evitar fallas durante la presentacion.
 - CFDI, PAC, nube productiva e integracion real quedan fuera de esta demo.

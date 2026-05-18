@@ -260,7 +260,7 @@
     "timeline": [
       { "label": "Solicitud urgente", "time": "12:12", "by": "Planta" },
       { "label": "Alcance recibido", "time": "12:40", "by": "Proveedor" },
-      { "label": "Riesgo marcado", "time": "12:46", "by": "GLR Intelligence" }
+      { "label": "Riesgo marcado", "time": "12:46", "by": "Arbor Intelligence" }
     ],
     "documents": [
       { "type": "Alcance", "title": "Alcance tecnico ECN-209", "issuer": "Energia y Calderas del Norte", "date": "2026-05-17", "summary": "Servicio critico con actividades y garantias detalladas.", "fields": ["Paro estimado: 6 horas", "Garantia: 45 dias", "Incluye refacciones: si", "Validacion: pendiente"] },

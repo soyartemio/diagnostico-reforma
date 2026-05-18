@@ -146,7 +146,7 @@ struct HeaderView: View {
     var body: some View {
         HStack {
             VStack(alignment: .leading, spacing: 4) {
-                Text("GLR ERP")
+                Text("Arbor")
                     .font(.system(size: 13, weight: .black))
                     .foregroundStyle(GLRColor.gold)
                 Text(store.tab.rawValue)
@@ -916,7 +916,7 @@ struct IntelligenceCard: View {
     let lines: [String]
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
-            Text("GLR Intelligence").font(.system(size: 12, weight: .black)).foregroundStyle(GLRColor.gold)
+            Text("Arbor Intelligence").font(.system(size: 12, weight: .black)).foregroundStyle(GLRColor.gold)
             Text(title).font(.system(size: 22, weight: .black)).foregroundStyle(.white)
             ForEach(lines, id: \.self) { line in
                 Text(line).font(.system(size: 14, weight: .medium)).foregroundStyle(GLRColor.mint)
