@@ -1,7 +1,7 @@
 {
-  "name": "Arbor ERP Demo",
+  "name": "Arbor ERP",
   "short_name": "Arbor",
-  "description": "Demo PWA de dashboards, compras, inventario e inteligencia operativa.",
+  "description": "ERP modular para dashboards, compras, inventario e inteligencia operativa.",
   "start_url": "./",
   "display": "standalone",
   "background_color": "#102f24",

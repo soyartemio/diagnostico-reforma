@@ -1,8 +1,9 @@
-const CACHE_NAME = "reforma-erp-demo-v6";
+const CACHE_NAME = "arbor-erp-v10";
 const ASSETS = [
   "./",
   "./index.html",
   "./styles.css",
+  "./simulation-core.js",
   "./app.js",
   "./manifest.webmanifest",
   "./assets/icon.svg",

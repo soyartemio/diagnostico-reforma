@@ -13,6 +13,10 @@ La demo no se valida solo porque compile. Se valida porque una persona puede jug
 - El buscador global encuentra OC/proveedor/SKU y abre el destino correcto.
 - Las notificaciones simuladas abren y cierran sin bloquear el flujo.
 - Ventas muestra pedidos y cotizaciones con montos, estado y siguiente accion.
+- Ganar una cotizacion crea pedido, reserva inventario y genera factura pendiente.
+- Preparar embarque mantiene material reservado sin salida fisica.
+- Liberar embarque convierte reserva en salida real de inventario y actualiza expediente.
+- Timbrar una factura simulada cambia CFDI a timbrada y habilita CxC.
 - Compras inicia sin expediente abierto.
 - Tocar una OC abre su expediente debajo de la tarjeta.
 - Tocar la misma OC otra vez cierra el expediente.
@@ -24,6 +28,12 @@ La demo no se valida solo porque compile. Se valida porque una persona puede jug
 - La OC decidida sale de Pendientes y aparece en Resuelto hoy.
 - Aprobar una OC genera una CxP con monto, proveedor, vencimiento y origen.
 - CxP refleja compromisos base mas compromisos generados durante la sesion.
+- Pagar una CxP cambia su estado, baja el saldo y crea salida en Bancos.
+- Facturacion muestra facturas, estado CFDI simulado, UUID demo, IVA, pedido y saldo.
+- CxC muestra saldos derivados de facturas y permite registrar cobro simulado.
+- Cobrar una CxC cambia su estado, baja cartera y crea entrada en Bancos.
+- Bancos muestra saldos y movimientos derivados de cobros/pagos.
+- Inventario distingue fisico, reservado y disponible.
 - Inventario muestra SKU criticos, movimientos recientes y compras ligadas.
 - La bitacora registra la accion tomada.
 - El dashboard actualiza conteos despues de una decision.
@@ -46,6 +56,8 @@ La demo no se valida solo porque compile. Se valida porque una persona puede jug
 ## Pruebas tecnicas
 
 - `node --check demo-app/app.js`
+- `node --check demo-app/simulation-core.js`
+- `node demo-app/simulation-core.test.cjs`
 - QA en navegador: abrir/cerrar OC, aprobacion, resuelto hoy, CxP generada, ventas, inventario, bitacora, anomalia.
 - Build iOS en simulador con XcodeBuildMCP.
 - Revisar captura final web y mobile/iOS.
@@ -61,6 +73,8 @@ Una entrega esta lista solo si cumple estas cuatro condiciones:
 
 ## Registro de ultima pasada
 
-- Web: se valido login, apertura/cierre de OC, aprobacion, movimiento a "Resuelto hoy", generacion de `CXP-260517-084`, Ventas con 3 pedidos/3 cotizaciones e Inventario con 4 SKU/3 movimientos/3 compras ligadas.
-- iOS: se valido build/run en iPhone 17 Pro, compras cerradas por default, apertura/cierre de OC, aprobacion y CxP generada visible.
+- Web: se valido login, apertura/cierre de OC, aprobacion, movimiento a "Resuelto hoy", generacion y pago de `CXP-260517-084`, ganar `COT-260517-410`, generar `PV-260517-410`, preparar/liberar `EMB-260517-410`, timbrar `FAC-260517-410`, cobrar `CXC-260517-410`, Facturacion, Embarques, CxC y Bancos con movimientos derivados.
+- Motor: se valido `simulation-core.test.cjs` con aprobacion de OC, entrada programada de inventario, CxP, ganar cotizacion, reserva de venta, salida real por embarque, timbrado CFDI, CxC, cobro, pago y movimientos bancarios.
+- Mobile web: se valido viewport 390x844, menu hamburguesa visible, bottom nav visible, modulos accesibles desde el menu lateral, Ventas y Embarques visibles.
+- iOS: se valido build/run en iPhone 17 Pro, compras cerradas por default, apertura/cierre de OC, aprobacion y CxP generada visible; se agrego flujo compacto de ventas, embarques e inventario para mantener consistencia con web.
 - Evidencia visual: `outputs/glr-web-cxp-approved.png` y `outputs/glr-ios-cxp-approved.jpg`.

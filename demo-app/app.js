@@ -7,9 +7,21 @@ const state = {
   intelMode: "brief",
   decisions: {},
   resolvedAnomalies: {},
+  settlements: {
+    receivables: {},
+    payables: {}
+  },
+  salesActions: {
+    wonQuotes: {},
+    stampedInvoices: {},
+    preparedShipments: {},
+    shippedOrders: {}
+  },
   activity: [],
   completionMessage: "",
-  tourStep: null
+  tourStep: null,
+  simulation: null,
+  simulationValidation: { ok: true, errors: [] }
 };
 
 const money = new Intl.NumberFormat("es-MX", {
@@ -21,9 +33,13 @@ const money = new Intl.NumberFormat("es-MX", {
 const views = {
   dashboard: { title: "Dashboard ejecutivo", kicker: "Centro de mando", el: "dashboardView" },
   ventas: { title: "Ventas", kicker: "Pedidos y cotizaciones", el: "ventasView" },
-  compras: { title: "Compras y autorizaciones", kicker: "Expediente playable", el: "comprasView" },
+  compras: { title: "Compras y autorizaciones", kicker: "Expediente operativo", el: "comprasView" },
   inventario: { title: "Inventario critico", kicker: "Motivos y acciones", el: "inventarioView" },
-  cxp: { title: "Cuentas por pagar", kicker: "Compromisos generados", el: "cxpView" }
+  facturacion: { title: "Facturacion", kicker: "CFDI", el: "facturacionView" },
+  embarques: { title: "Embarques", kicker: "Salida fisica", el: "embarquesView" },
+  cxc: { title: "Cuentas por cobrar", kicker: "Cobranza conectada", el: "cxcView" },
+  cxp: { title: "Cuentas por pagar", kicker: "Compromisos generados", el: "cxpView" },
+  bancos: { title: "Bancos", kicker: "Caja operativa", el: "bancosView" }
 };
 
 const salesOrders = [
@@ -148,6 +164,26 @@ async function loadData() {
   state.dashboard = dashboard;
   state.purchases = purchases;
   state.selectedPurchaseId = null;
+  refreshSimulation();
+}
+
+function refreshSimulation() {
+  if (!window.ArborSimulation) return;
+  state.simulation = window.ArborSimulation.createSimulation({
+    decisions: state.decisions,
+    settlements: state.settlements,
+    salesActions: state.salesActions,
+    purchases: state.purchases
+  });
+  state.simulationValidation = state.simulation.validation || window.ArborSimulation.validateSimulation(state.simulation);
+  if (!state.simulationValidation.ok) {
+    console.warn("Arbor simulation validation", state.simulationValidation.errors);
+  }
+}
+
+function getSimulation() {
+  if (!state.simulation) refreshSimulation();
+  return state.simulation;
 }
 
 function qs(selector) {
@@ -195,23 +231,27 @@ function getApprovedPurchases() {
 }
 
 function payableFromPurchase(purchase) {
-  return {
-    id: `CXP-${purchase.id.replace("OC-", "")}`,
+  const payableId = `CXP-${purchase.id.replace("OC-", "")}`;
+  return getPayables().find((item) => item.id === payableId) || {
+    id: payableId,
     supplier: purchase.supplier,
     origin: purchase.id,
     amount: purchase.amount,
-    due: purchase.paymentTerm === "Contado" ? "2026-05-18" : purchase.paymentTerm.includes("15") ? "2026-06-01" : "2026-06-16",
+    balance: purchase.amount,
+    due: purchase.paymentTerm === "Contado" ? "2026-05-22" : purchase.paymentTerm.includes("15") ? "2026-06-06" : "2026-06-21",
     status: "Generada por aprobacion"
   };
 }
 
 function getPayables() {
-  const generated = getApprovedPurchases().map(payableFromPurchase);
-  return [...generated, ...basePayables];
+  return getSimulation()?.payables || [];
 }
 
 function renderDashboard() {
   const { dashboard } = state;
+  const simulation = getSimulation();
+  const kpis = simulation?.kpis?.length ? simulation.kpis : dashboard.kpis;
+  const alerts = simulation?.alerts?.length ? simulation.alerts : dashboard.alerts;
   const pending = state.purchases.filter((purchase) => !state.decisions[purchase.id]).length;
   const done = state.purchases.length - pending;
   const progress = Math.round((done / state.purchases.length) * 100);
@@ -219,7 +259,7 @@ function renderDashboard() {
   if (qs("#mirrorScore")) qs("#mirrorScore").textContent = `${done}/${state.purchases.length}`;
   qs("#syncStamp").textContent = `${pending} compras por decidir`;
 
-  qs("#kpiGrid").innerHTML = dashboard.kpis.map((kpi) => `
+  qs("#kpiGrid").innerHTML = kpis.map((kpi) => `
     <button class="kpi-card ${kpi.id === state.selectedKpiId ? "active" : ""}" data-kpi="${kpi.id}">
       <span>${kpi.label}</span>
       <strong>${kpi.value}</strong>
@@ -234,7 +274,7 @@ function renderDashboard() {
   renderDecisionLog();
   renderNotifications();
 
-  qs("#alertsList").innerHTML = dashboard.alerts.map((alert) => `
+  qs("#alertsList").innerHTML = alerts.map((alert) => `
     <button class="alert-item" data-alert="${alert.id}">
       <span class="badge ${alert.priority === "Alta" ? "danger" : "watch"}">${alert.priority}</span>
       <strong>${alert.title}</strong>
@@ -264,6 +304,7 @@ function renderDashboard() {
 function getTodayFocus() {
   const highRisk = state.purchases.find((purchase) => purchase.risk === "Alto" && !state.decisions[purchase.id]) || state.purchases[0];
   const pending = state.purchases.filter((purchase) => !state.decisions[purchase.id]).length;
+  const critical = getSimulation()?.inventory?.[0];
   return [
     {
       title: "Decidir compra sensible",
@@ -274,7 +315,7 @@ function getTodayFocus() {
     },
     {
       title: "Proteger inventario critico",
-      text: "CCA y pino industrial requieren accion antes de nuevas promesas.",
+      text: critical ? `${critical.name}: cobertura ${critical.coverage}.` : "CCA y pino industrial requieren accion antes de nuevas promesas.",
       tone: "watch",
       targetType: "intel",
       target: "inventory"
@@ -293,6 +334,8 @@ function getNotifications() {
   const pendingHigh = state.purchases.filter((purchase) => purchase.risk === "Alto" && !state.decisions[purchase.id]);
   const openAnomalies = getAnomalies().filter((item) => !state.resolvedAnomalies[item.id]);
   const generatedPayables = getApprovedPurchases().length;
+  const simulation = getSimulation();
+  const openReceivables = simulation?.receivables?.filter((item) => item.balance > 0).length || 0;
   return [
     {
       title: `${pendingHigh.length} OC de alto riesgo`,
@@ -317,6 +360,12 @@ function getNotifications() {
       text: "Las compras aprobadas ya aparecen como compromiso financiero.",
       action: "Ver CxP",
       target: "cxp"
+    },
+    {
+      title: `${openReceivables} CxC abiertas`,
+      text: "Cobranza, facturas y bancos ya estan conectados en Arbor.",
+      action: "Ver CxC",
+      target: "cxc"
     }
   ];
 }
@@ -339,6 +388,7 @@ function renderNotifications() {
 function getSearchResults(query) {
   const term = query.trim().toLowerCase();
   if (!term) return [];
+  const simulation = getSimulation();
   const purchaseResults = state.purchases
     .filter((purchase) => [
       purchase.id,
@@ -355,7 +405,7 @@ function getSearchResults(query) {
       command: `purchase:${purchase.id}`
     }));
 
-  const inventoryResults = state.dashboard.inventory
+  const inventoryResults = (simulation?.inventory || state.dashboard.inventory)
     .filter((item) => `${item.sku} ${item.name} ${item.reason}`.toLowerCase().includes(term))
     .slice(0, 3)
     .map((item) => ({
@@ -375,7 +425,7 @@ function getSearchResults(query) {
       command: "view:dashboard"
     }));
 
-  const salesResults = [...salesOrders, ...salesQuotes]
+  const salesResults = [...(simulation?.sales?.orders || salesOrders), ...(simulation?.sales?.quotes || salesQuotes)]
     .filter((item) => `${item.id} ${item.customer} ${item.status || item.stage}`.toLowerCase().includes(term))
     .slice(0, 3)
     .map((item) => ({
@@ -383,6 +433,26 @@ function getSearchResults(query) {
       title: `${item.id} · ${item.customer}`,
       text: `${money.format(item.amount)} · ${item.status || item.stage}`,
       command: "view:ventas"
+    }));
+
+  const invoiceResults = (simulation?.invoices || [])
+    .filter((item) => `${item.id} ${item.customer} ${item.cfdiStatus} ${item.orderId}`.toLowerCase().includes(term))
+    .slice(0, 3)
+    .map((item) => ({
+      type: "Factura",
+      title: `${item.id} · ${item.customer}`,
+      text: `${money.format(item.amount)} · ${item.cfdiStatus}`,
+      command: "view:facturacion"
+    }));
+
+  const receivableResults = (simulation?.receivables || [])
+    .filter((item) => `${item.id} ${item.customer} ${item.invoiceId}`.toLowerCase().includes(term))
+    .slice(0, 3)
+    .map((item) => ({
+      type: "CxC",
+      title: `${item.id} · ${item.customer}`,
+      text: `${money.format(item.balance)} · ${item.status}`,
+      command: "view:cxc"
     }));
 
   const payableResults = getPayables()
@@ -395,7 +465,7 @@ function getSearchResults(query) {
       command: "view:cxp"
     }));
 
-  return [...purchaseResults, ...inventoryResults, ...salesResults, ...payableResults, ...alertResults].slice(0, 7);
+  return [...purchaseResults, ...inventoryResults, ...salesResults, ...invoiceResults, ...receivableResults, ...payableResults, ...alertResults].slice(0, 7);
 }
 
 function renderCommandResults(query) {
@@ -416,7 +486,7 @@ function renderCommandResults(query) {
         <span>${result.text}</span>
       </button>
     `).join("")
-    : `<div class="command-empty">Sin resultados. Prueba con proveedor, OC o SKU.</div>`;
+    : `<div class="command-empty">Sin resultados. Busca por proveedor, OC o SKU.</div>`;
 }
 
 function runCommand(command) {
@@ -530,7 +600,8 @@ function renderCompletionBanner() {
 }
 
 function renderKpiDrilldown() {
-  const kpi = state.dashboard.kpis.find((item) => item.id === state.selectedKpiId) || state.dashboard.kpis[0];
+  const kpis = getSimulation()?.kpis?.length ? getSimulation().kpis : state.dashboard.kpis;
+  const kpi = kpis.find((item) => item.id === state.selectedKpiId) || kpis[0];
   if (!kpi) return;
 
   qs("#kpiDrilldown").innerHTML = `
@@ -803,6 +874,7 @@ function getIntelligenceOutput(mode = "brief") {
   const highRisk = state.purchases.filter((item) => item.risk === "Alto");
   const pending = state.purchases.filter((item) => !state.decisions[item.id]);
   const approved = Object.values(state.decisions).filter((value) => value === "Aprobada").length;
+  const simulation = getSimulation();
 
   const outputs = {
     brief: {
@@ -834,7 +906,7 @@ function getIntelligenceOutput(mode = "brief") {
     },
     inventory: {
       title: "Prediccion de inventario",
-      body: state.dashboard.inventory.slice(0, 3).map((item) => `${item.name}: cobertura ${item.coverage}. ${item.impact}`),
+      body: (simulation?.inventory || state.dashboard.inventory).slice(0, 3).map((item) => `${item.name}: cobertura ${item.coverage}. ${item.impact}`),
       cta: "Siguiente accion: ligar faltantes con compras abiertas."
     },
     docs: {
@@ -851,7 +923,7 @@ function getIntelligenceOutput(mode = "brief") {
       body: [
         `${purchase.id} agregaria ${money.format(purchase.amount)} a compromisos de pago.`,
         `Condicion de pago: ${purchase.paymentTerm}.`,
-        "El sistema puede alertar si se aprueban varias compras grandes en la misma semana."
+        `Banco operativo: ${money.format(simulation?.banks?.[0]?.balance || 0)} antes de nuevos pagos.`
       ],
       cta: "Siguiente accion: revisar flujo semanal antes de autorizar compras altas."
     }
@@ -945,47 +1017,55 @@ function addActivity(text) {
 }
 
 function renderInventory() {
-  qs("#inventoryList").innerHTML = state.dashboard.inventory.map((row) => `
+  const simulation = getSimulation();
+  const inventory = simulation?.inventory || state.dashboard.inventory;
+  const movements = simulation?.inventoryMovements || inventoryMovements;
+  qs("#inventoryList").innerHTML = inventory.map((row) => `
     <div class="table-row">
       <div>
         <strong>${row.name}</strong>
-        <p>${row.sku} · cobertura ${row.coverage}</p>
+        <p>${row.sku} · cobertura ${row.coverage} · disponible ${row.available ?? row.onHand ?? "pendiente"} ${row.unit || ""}</p>
+        <p>Fisico ${row.physicalOnHand ?? row.onHand ?? "pendiente"} · reservado ${row.reserved ?? 0} ${row.unit || ""}</p>
         <p>${row.reason}</p>
       </div>
       <div>
-        <span class="badge danger">Atencion</span>
+        <span class="badge ${row.tone || "danger"}">${row.tone === "good" ? "Sano" : "Atencion"}</span>
         <p>${row.impact}</p>
         <small>${row.suggestion}</small>
       </div>
     </div>
   `).join("");
 
-  qs("#inventoryMovements").innerHTML = inventoryMovements.map((move) => `
+  qs("#inventoryMovements").innerHTML = movements.map((move) => `
     <div class="movement-row">
-      <time>${move.time}</time>
+      <time>${move.time || move.date}</time>
       <div>
-        <strong>${move.type}: ${move.item}</strong>
-        <span>${move.qty} · ${move.ref}</span>
+        <strong>${move.type}: ${move.item || move.sku}</strong>
+        <span>${Math.abs(move.qty)} · ${move.ref} · ${move.status || "Operacion"}</span>
       </div>
     </div>
   `).join("");
 
-  qs("#inventoryLinkedPurchases").innerHTML = state.purchases
-    .filter((purchase) => ["OC-260517-084", "OC-260517-091", "OC-260517-102"].includes(purchase.id))
+  const linked = inventory.flatMap((item) => item.linkedPurchases || [])
+    .filter((purchase, index, arr) => arr.findIndex((item) => item.id === purchase.id) === index)
+    .slice(0, 6);
+  qs("#inventoryLinkedPurchases").innerHTML = linked.length ? linked
     .map((purchase) => `
       <button class="linked-record" data-open-purchase="${purchase.id}">
         <strong>${purchase.id}</strong>
         <span>${purchase.supplier}</span>
-        <em>${money.format(purchase.amount)} · ${state.decisions[purchase.id] || "Pendiente"}</em>
+        <em>${money.format(purchase.amount)} · ${purchase.decision || state.decisions[purchase.id] || "Pendiente"}</em>
       </button>
-    `).join("");
+    `).join("") : `<div class="empty-state">No hay compras ligadas a SKU criticos.</div>`;
 }
 
 function renderSales() {
-  const total = salesOrders.reduce((sum, order) => sum + order.amount, 0);
-  qs("#salesSummary").textContent = `${salesOrders.length} pedidos · ${money.format(total)}`;
-  qs("#salesOrders").innerHTML = salesOrders.map((order) => `
-    <article class="record-card sales-record">
+  const orders = getSimulation()?.sales?.orders || salesOrders;
+  const quotes = getSimulation()?.sales?.quotes || salesQuotes;
+  const total = orders.reduce((sum, order) => sum + order.amount, 0);
+  qs("#salesSummary").textContent = `${orders.length} pedidos · ${money.format(total)}`;
+  qs("#salesOrders").innerHTML = orders.map((order) => `
+    <article class="record-card sales-record ${order.sourceQuoteId ? "generated-record" : ""}">
       <div class="record-top">
         <span>${order.id}</span>
         <em>${order.status}</em>
@@ -996,15 +1076,18 @@ function renderSales() {
         <span>Margen ${order.margin}</span>
       </div>
       <p>${order.inventory} · entrega ${order.eta}</p>
-      <small>${order.risk}</small>
+      <small>${order.risk} · ${order.shipmentStatus}</small>
+      ${order.shipmentId ? `<button class="record-action secondary-record-action" data-open-shipment="${order.id}">Ver embarque ${order.shipmentId}</button>` : ""}
+      ${order.shipmentId && order.shipmentStatus !== "Embarcado" ? `<button class="record-action" data-prepare-shipment="${order.id}">${order.shipmentStatus === "Preparado" ? "Listo en embarques" : "Preparar embarque"}</button>` : ""}
+      ${order.invoiceId ? `<button class="record-action" data-view-jump="facturacion">Ver factura ${order.invoiceId}</button>` : ""}
     </article>
   `).join("");
 
-  qs("#salesQuotes").innerHTML = salesQuotes.map((quote) => `
-    <article class="record-card quote-record">
+  qs("#salesQuotes").innerHTML = quotes.map((quote) => `
+    <article class="record-card quote-record ${quote.status === "Ganada" ? "generated-record" : ""}">
       <div class="record-top">
         <span>${quote.id}</span>
-        <em>${quote.probability}</em>
+        <em>${quote.status === "Ganada" ? "Ganada" : quote.probability}</em>
       </div>
       <h3>${quote.customer}</h3>
       <div class="record-metrics">
@@ -1012,39 +1095,185 @@ function renderSales() {
         <span>${quote.stage}</span>
       </div>
       <p>${quote.next}</p>
+      <small>${quote.stock || "Inventario por validar"}</small>
+      <button class="record-action" data-win-quote="${quote.id}" ${quote.status === "Ganada" ? "disabled" : ""}>
+        ${quote.status === "Ganada" ? `Pedido ${quote.generatedOrderId}` : "Ganar cotizacion"}
+      </button>
     </article>
   `).join("");
 }
 
+function renderShipments() {
+  const simulation = getSimulation();
+  if (!simulation) return;
+  const shipments = simulation.shipments || [];
+  const pending = shipments.filter((shipment) => !shipment.shipped).length;
+  qs("#shipmentPendingTotal").textContent = String(pending);
+  qs("#shipmentCount").textContent = `${shipments.length} expedientes`;
+  qs("#shipmentList").innerHTML = shipments.map((shipment) => `
+    <article class="record-card shipment-record ${shipment.shipped ? "settled-record" : shipment.prepared ? "generated-record" : ""}">
+      <div class="record-top">
+        <span>${shipment.id}</span>
+        <em>${shipment.status}</em>
+      </div>
+      <h3>${shipment.customer}</h3>
+      <div class="record-metrics">
+        <strong>${money.format(shipment.amount)}</strong>
+        <span>${shipment.orderId} · ${shipment.invoiceId}</span>
+      </div>
+      <p>${shipment.shipped ? "Salida fisica aplicada al inventario." : shipment.prepared ? "Material reservado y listo para liberar." : "Pedido comprometido, sin salida fisica todavia."}</p>
+      <div class="shipment-evidence">
+        ${shipment.evidence.map((item) => `<span>${item}</span>`).join("")}
+      </div>
+      <div class="record-actions-row">
+        <button class="record-action secondary-record-action" data-prepare-shipment="${shipment.orderId}" ${shipment.prepared ? "disabled" : ""}>${shipment.prepared ? "Preparado" : "Preparar"}</button>
+        <button class="record-action" data-ship-order="${shipment.orderId}" ${shipment.shipped ? "disabled" : ""}>${shipment.shipped ? "Liberado" : "Liberar embarque"}</button>
+      </div>
+    </article>
+  `).join("");
+
+  qs("#shipmentRule").innerHTML = `
+    <div class="flow-step">
+      <span>01</span>
+      <strong>Cotizacion ganada</strong>
+      <p>Crea pedido y reserva inventario. La madera sigue fisicamente en planta.</p>
+    </div>
+    <div class="flow-step">
+      <span>02</span>
+      <strong>Preparacion</strong>
+      <p>Almacen valida material, evidencia y documentos antes de cargar.</p>
+    </div>
+    <div class="flow-step">
+      <span>03</span>
+      <strong>Embarque liberado</strong>
+      <p>La reserva se convierte en salida real y el disponible cambia con trazabilidad.</p>
+    </div>
+  `;
+}
+
 function renderPayables() {
   const payables = getPayables();
-  const total = payables.reduce((sum, item) => sum + item.amount, 0);
+  const total = payables.reduce((sum, item) => sum + (item.balance ?? item.amount), 0);
   qs("#cxpTotal").textContent = money.format(total);
   qs("#cxpCount").textContent = `${payables.length} registros`;
   qs("#payablesList").innerHTML = payables.map((item) => `
-    <article class="payable-row ${item.status.includes("Generada") ? "generated" : ""}">
+    <article class="payable-row ${item.status.includes("Generada") ? "generated" : ""} ${item.balance === 0 ? "settled" : ""}">
       <div>
         <strong>${item.id}</strong>
         <span>${item.supplier}</span>
       </div>
       <div>
-        <b>${money.format(item.amount)}</b>
+        <b>${money.format(item.balance ?? item.amount)}</b>
         <small>${item.due} · ${item.status}</small>
       </div>
       <em>${item.origin}</em>
+      <button class="row-action" data-pay-payable="${item.id}" ${item.balance === 0 ? "disabled" : ""}>${item.balance === 0 ? "Pagada" : "Pagar"}</button>
     </article>
   `).join("");
 
   const buckets = [
-    { label: "Hoy", amount: payables.filter((item) => item.due <= "2026-05-18").reduce((sum, item) => sum + item.amount, 0) },
-    { label: "7 dias", amount: payables.filter((item) => item.due > "2026-05-18" && item.due <= "2026-05-25").reduce((sum, item) => sum + item.amount, 0) },
-    { label: "Programado", amount: payables.filter((item) => item.due > "2026-05-25").reduce((sum, item) => sum + item.amount, 0) }
+    { label: "Vencido / hoy", amount: payables.filter((item) => item.balance > 0 && item.due <= "2026-05-22").reduce((sum, item) => sum + item.balance, 0) },
+    { label: "7 dias", amount: payables.filter((item) => item.balance > 0 && item.due > "2026-05-22" && item.due <= "2026-05-29").reduce((sum, item) => sum + item.balance, 0) },
+    { label: "Programado", amount: payables.filter((item) => item.balance > 0 && item.due > "2026-05-29").reduce((sum, item) => sum + item.balance, 0) }
   ];
   qs("#cashFlowList").innerHTML = buckets.map((bucket) => `
     <div class="cash-bucket">
       <span>${bucket.label}</span>
       <strong>${money.format(bucket.amount)}</strong>
       <i style="width:${Math.max(8, Math.round((bucket.amount / Math.max(total, 1)) * 100))}%"></i>
+    </div>
+  `).join("");
+}
+
+function renderInvoices() {
+  const simulation = getSimulation();
+  if (!simulation) return;
+  const total = simulation.invoices.reduce((sum, item) => sum + item.amount, 0);
+  qs("#invoiceTotal").textContent = money.format(total);
+  qs("#invoiceCount").textContent = `${simulation.invoices.length} CFDI`;
+  qs("#invoiceList").innerHTML = simulation.invoices.map((invoice) => `
+    <article class="record-card invoice-record ${invoice.cfdiStatus !== "Timbrada" ? "attention-record" : ""} ${invoice.generatedFromQuote ? "generated-record" : ""}">
+      <div class="record-top">
+        <span>${invoice.id}</span>
+        <em>${invoice.cfdiStatus}</em>
+      </div>
+      <h3>${invoice.customer}</h3>
+      <div class="record-metrics">
+        <strong>${money.format(invoice.amount)}</strong>
+        <span>IVA ${money.format(invoice.iva)} · saldo ${money.format(invoice.balance)}</span>
+      </div>
+      <p>${invoice.orderId} · vence ${invoice.due}</p>
+      <small>${invoice.uuid}</small>
+      <button class="record-action" data-stamp-invoice="${invoice.id}" ${!invoice.canStamp ? "disabled" : ""}>
+        ${invoice.canStamp ? "Timbrar CFDI" : "CFDI timbrado"}
+      </button>
+    </article>
+  `).join("");
+
+  qs("#invoiceFlow").innerHTML = simulation.invoices.slice().reverse().map((invoice) => `
+    <div class="flow-step">
+      <span>${invoice.orderId}</span>
+      <strong>${invoice.id}</strong>
+      <p>${invoice.cfdiStatus} · ${invoice.receivableStatus}</p>
+    </div>
+  `).join("");
+}
+
+function renderReceivables() {
+  const simulation = getSimulation();
+  if (!simulation) return;
+  const open = simulation.receivables.filter((item) => item.balance > 0);
+  const total = open.reduce((sum, item) => sum + item.balance, 0);
+  qs("#cxcTotal").textContent = money.format(total);
+  qs("#cxcCount").textContent = `${open.length} abiertas`;
+  qs("#receivablesList").innerHTML = simulation.receivables.map((item) => `
+    <article class="payable-row receivable-row ${item.balance === 0 ? "settled" : ""} ${item.due < simulation.today && item.balance > 0 ? "overdue" : ""}">
+      <div>
+        <strong>${item.id}</strong>
+        <span>${item.customer}</span>
+      </div>
+      <div>
+        <b>${money.format(item.balance)}</b>
+        <small>${item.due} · ${item.status}</small>
+      </div>
+      <em>${item.invoiceId}</em>
+      <button class="row-action" data-collect-receivable="${item.id}" ${item.balance === 0 || item.canCollect === false ? "disabled" : ""}>${item.balance === 0 ? "Cobrada" : item.canCollect === false ? "Por timbrar" : "Cobrar"}</button>
+    </article>
+  `).join("");
+
+  qs("#collectionFocus").innerHTML = open.length ? open
+    .sort((a, b) => a.due.localeCompare(b.due))
+    .slice(0, 4)
+    .map((item) => `
+      <button class="linked-record" ${item.canCollect === false ? `data-view-jump="facturacion"` : `data-collect-receivable="${item.id}"`}>
+        <strong>${item.customer}</strong>
+        <span>${item.invoiceId} · vence ${item.due}</span>
+        <em>${item.canCollect === false ? "Timbrar antes de cobrar" : `${money.format(item.balance)} por cobrar`}</em>
+      </button>
+    `).join("") : `<div class="empty-state premium-empty"><strong>Cartera limpia.</strong><span>No quedan saldos abiertos en la simulacion.</span></div>`;
+}
+
+function renderBanks() {
+  const simulation = getSimulation();
+  if (!simulation) return;
+  const operative = simulation.banks.find((bank) => bank.id === "BAN-001") || simulation.banks[0];
+  qs("#bankTotal").textContent = money.format(operative?.balance || 0);
+  qs("#bankAccounts").innerHTML = simulation.banks.map((bank) => `
+    <article class="bank-card">
+      <span>${bank.name}</span>
+      <strong>${money.format(bank.balance)}</strong>
+      <small>Saldo inicial ${money.format(bank.opening)}</small>
+    </article>
+  `).join("");
+
+  qs("#bankMovements").innerHTML = simulation.bankMovements.map((movement) => `
+    <div class="movement-row bank-movement ${movement.amount < 0 ? "outflow" : "inflow"}">
+      <time>${movement.date}</time>
+      <div>
+        <strong>${movement.concept}</strong>
+        <span>${movement.origin} · ${movement.type}</span>
+      </div>
+      <b>${money.format(movement.amount)}</b>
     </div>
   `).join("");
 }
@@ -1126,11 +1355,21 @@ function bindEvents() {
 
     const alertBtn = event.target.closest("[data-alert]");
     if (alertBtn) {
-      const firstHighRisk = state.purchases.find((purchase) => purchase.risk === "Alto");
-      if (firstHighRisk) {
-        state.selectedPurchaseId = firstHighRisk.id;
+      const alert = getSimulation()?.alerts?.find((item) => item.id === alertBtn.dataset.alert);
+      const target = alert?.target;
+      if (target?.startsWith("OC-")) {
+        state.selectedPurchaseId = target;
         setView("compras");
         renderPurchases();
+      } else if (views[target]) {
+        setView(target);
+      } else {
+        const firstHighRisk = state.purchases.find((purchase) => purchase.risk === "Alto");
+        if (firstHighRisk) {
+          state.selectedPurchaseId = firstHighRisk.id;
+          setView("compras");
+          renderPurchases();
+        }
       }
     }
 
@@ -1164,6 +1403,7 @@ function bindEvents() {
       const purchase = getSelectedPurchase();
       const decision = actionBtn.dataset.action;
       state.decisions[state.selectedPurchaseId] = decision;
+      refreshSimulation();
       addActivity(`${decision}: ${purchase.id} · ${purchase.supplier}`);
       if (decision === "Aprobada") {
         const payable = payableFromPurchase(purchase);
@@ -1176,7 +1416,9 @@ function bindEvents() {
       renderPurchases();
       renderDashboard();
       renderAnomalies();
+      renderInventory();
       renderPayables();
+      renderBanks();
       showToast(`${purchase.id}: ${decision}`);
       window.setTimeout(() => {
         state.completionMessage = "";
@@ -1188,11 +1430,144 @@ function bindEvents() {
     if (reopenBtn) {
       const purchase = getSelectedPurchase();
       delete state.decisions[reopenBtn.dataset.reopenDecision];
+      delete state.settlements.payables[`CXP-${reopenBtn.dataset.reopenDecision.replace("OC-", "")}`];
+      refreshSimulation();
       addActivity(`Reabierta decision: ${purchase.id}`);
       renderPurchases();
       renderDashboard();
+      renderInventory();
       renderPayables();
+      renderBanks();
       showToast(`${purchase.id}: decision reabierta`);
+    }
+
+    const payBtn = event.target.closest("[data-pay-payable]");
+    if (payBtn) {
+      if (payBtn.disabled) return;
+      const id = payBtn.dataset.payPayable;
+      state.settlements.payables[id] = true;
+      refreshSimulation();
+      const payable = getPayables().find((item) => item.id === id);
+      addActivity(`Pago registrado: ${id} · ${payable ? money.format(payable.amount) : "pendiente"}`);
+      renderPayables();
+      renderBanks();
+      renderDashboard();
+      renderNotifications();
+      showToast(`${id}: pago reflejado en bancos`);
+    }
+
+    const collectBtn = event.target.closest("[data-collect-receivable]");
+    if (collectBtn) {
+      if (collectBtn.disabled) return;
+      const id = collectBtn.dataset.collectReceivable;
+      state.settlements.receivables[id] = true;
+      refreshSimulation();
+      const receivable = getSimulation()?.receivables?.find((item) => item.id === id);
+      addActivity(`Cobro registrado: ${id} · ${receivable ? money.format(receivable.amount) : "pendiente"}`);
+      renderReceivables();
+      renderBanks();
+      renderDashboard();
+      renderNotifications();
+      showToast(`${id}: cobro reflejado en bancos`);
+    }
+
+    const winQuoteBtn = event.target.closest("[data-win-quote]");
+    if (winQuoteBtn) {
+      if (winQuoteBtn.disabled) return;
+      const id = winQuoteBtn.dataset.winQuote;
+      state.salesActions.wonQuotes[id] = true;
+      const orderId = `PV-${id.replace("COT-", "")}`;
+      state.salesActions.preparedShipments[orderId] = true;
+      refreshSimulation();
+      const quote = getSimulation()?.sales?.quotes?.find((item) => item.id === id);
+      addActivity(`Cotizacion ganada: ${id} · ${quote?.customer || "cliente"}`);
+      state.completionMessage = `${id} genero pedido, reserva de inventario y factura pendiente de timbrado.`;
+      renderSales();
+      renderShipments();
+      renderInventory();
+      renderInvoices();
+      renderReceivables();
+      renderDashboard();
+      renderNotifications();
+      renderCompletionBanner();
+      showToast(`${id}: pedido generado`);
+      window.setTimeout(() => {
+        state.completionMessage = "";
+        renderCompletionBanner();
+      }, 3200);
+    }
+
+    const stampBtn = event.target.closest("[data-stamp-invoice]");
+    if (stampBtn) {
+      if (stampBtn.disabled) return;
+      const id = stampBtn.dataset.stampInvoice;
+      state.salesActions.stampedInvoices[id] = true;
+      refreshSimulation();
+      const invoice = getSimulation()?.invoices?.find((item) => item.id === id);
+      addActivity(`CFDI timbrado: ${id} · ${invoice?.customer || "cliente"}`);
+      state.completionMessage = `${id} quedo timbrada y genero CxC lista para cobro.`;
+      renderInvoices();
+      renderReceivables();
+      renderSales();
+      renderShipments();
+      renderDashboard();
+      renderNotifications();
+      renderCompletionBanner();
+      showToast(`${id}: CFDI timbrado`);
+      window.setTimeout(() => {
+        state.completionMessage = "";
+        renderCompletionBanner();
+      }, 3200);
+    }
+
+    const openShipmentBtn = event.target.closest("[data-open-shipment]");
+    if (openShipmentBtn) {
+      const id = openShipmentBtn.dataset.openShipment;
+      state.salesActions.preparedShipments[id] = true;
+      refreshSimulation();
+      renderShipments();
+      renderSales();
+      setView("embarques");
+      showToast(`${id}: embarque abierto`);
+    }
+
+    const prepareShipmentBtn = event.target.closest("[data-prepare-shipment]");
+    if (prepareShipmentBtn) {
+      if (prepareShipmentBtn.disabled) return;
+      const id = prepareShipmentBtn.dataset.prepareShipment;
+      state.salesActions.preparedShipments[id] = true;
+      refreshSimulation();
+      addActivity(`Embarque preparado: ${id}`);
+      renderSales();
+      renderShipments();
+      renderInventory();
+      renderDashboard();
+      setView("embarques");
+      showToast(`${id}: listo para liberar`);
+    }
+
+    const shipOrderBtn = event.target.closest("[data-ship-order]");
+    if (shipOrderBtn) {
+      if (shipOrderBtn.disabled) return;
+      const id = shipOrderBtn.dataset.shipOrder;
+      state.salesActions.preparedShipments[id] = true;
+      state.salesActions.shippedOrders[id] = true;
+      refreshSimulation();
+      const shipment = getSimulation()?.shipments?.find((item) => item.orderId === id);
+      addActivity(`Embarque liberado: ${shipment?.id || id} · salida real de inventario`);
+      state.completionMessage = `${shipment?.id || id} libero salida real de inventario y genero remision.`;
+      renderSales();
+      renderShipments();
+      renderInventory();
+      renderInvoices();
+      renderDashboard();
+      renderNotifications();
+      renderCompletionBanner();
+      showToast(`${shipment?.id || id}: inventario descontado`);
+      window.setTimeout(() => {
+        state.completionMessage = "";
+        renderCompletionBanner();
+      }, 3200);
     }
 
     const anomalyBtn = event.target.closest("[data-anomaly]");
@@ -1222,6 +1597,8 @@ function bindEvents() {
   qs("#resetBtn").addEventListener("click", () => {
     state.decisions = {};
     state.resolvedAnomalies = {};
+    state.settlements = { receivables: {}, payables: {} };
+    state.salesActions = { wonQuotes: {}, stampedInvoices: {}, preparedShipments: {}, shippedOrders: {} };
     state.activity = [];
     state.completionMessage = "";
     state.tourStep = null;
@@ -1256,11 +1633,16 @@ function setupPwaInstall() {
 }
 
 function renderAll() {
+  refreshSimulation();
   renderDashboard();
   renderPurchases();
   renderInventory();
   renderSales();
+  renderShipments();
+  renderInvoices();
+  renderReceivables();
   renderPayables();
+  renderBanks();
   renderIntelligence("brief");
   renderAnomalies();
   renderDecisionLog();
@@ -1269,9 +1651,15 @@ function renderAll() {
 }
 
 async function init() {
-  await loadData();
   bindEvents();
   setupPwaInstall();
+  try {
+    await loadData();
+  } catch (error) {
+    console.error("No se pudo cargar Arbor", error);
+    showToast("No se pudo cargar la operacion. Recarga la pagina.");
+    return;
+  }
   renderAll();
   if ("serviceWorker" in navigator) {
     navigator.serviceWorker.register("sw.js").catch(() => {});

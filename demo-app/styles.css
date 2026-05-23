@@ -1451,7 +1451,9 @@ button:focus-visible {
 .payable-row,
 .movement-row,
 .linked-record,
-.cash-bucket {
+.cash-bucket,
+.flow-step,
+.bank-card {
   border: 1px solid var(--line);
   background: #fff;
   border-radius: 8px;
@@ -1460,6 +1462,12 @@ button:focus-visible {
 #salesOrders,
 #salesQuotes,
 #payablesList,
+#invoiceList,
+#invoiceFlow,
+#receivablesList,
+#collectionFocus,
+#bankAccounts,
+#bankMovements,
 #inventoryMovements,
 #inventoryLinkedPurchases,
 #cashFlowList {
@@ -1471,6 +1479,16 @@ button:focus-visible {
   display: grid;
   gap: 10px;
   padding: 15px;
+}
+
+.record-card.generated-record {
+  border-color: rgba(36, 112, 71, 0.32);
+  background: linear-gradient(135deg, #f4fbf6, #fffef9);
+}
+
+.record-card.settled-record {
+  border-color: rgba(45, 103, 166, 0.24);
+  background: linear-gradient(135deg, #f3f8fb, #fffef9);
 }
 
 .record-top,
@@ -1512,6 +1530,38 @@ button:focus-visible {
 .record-metrics strong {
   color: var(--forest);
   font-size: 22px;
+}
+
+.record-action {
+  width: max-content;
+  max-width: 100%;
+  border: 1px solid rgba(36, 112, 71, 0.24);
+  background: var(--forest);
+  color: #fff;
+  border-radius: 999px;
+  padding: 9px 13px;
+  font-size: 12px;
+  font-weight: 950;
+  transition: transform 150ms ease, background 150ms ease, opacity 150ms ease;
+}
+
+.record-action:hover:not(:disabled) {
+  transform: translateY(-1px);
+  background: var(--green);
+}
+
+.record-action:disabled {
+  cursor: not-allowed;
+  opacity: 0.52;
+}
+
+.secondary-record-action {
+  background: #fff;
+  color: var(--forest);
+}
+
+.secondary-record-action:hover:not(:disabled) {
+  background: #f4fbf6;
 }
 
 .movement-row {
@@ -1559,6 +1609,22 @@ button:focus-visible {
   background: linear-gradient(135deg, #102f24, #244132);
 }
 
+.invoice-hero {
+  background: linear-gradient(135deg, #123226, #2c5b45);
+}
+
+.cxc-hero {
+  background: linear-gradient(135deg, #173b2c, #6a4c23);
+}
+
+.bank-hero {
+  background: linear-gradient(135deg, #0f2b22, #2d5f52);
+}
+
+.shipping-hero {
+  background: linear-gradient(135deg, #102f24, #426142);
+}
+
 .cxp-total {
   min-width: 220px;
   padding: 16px;
@@ -1584,13 +1650,23 @@ button:focus-visible {
 
 .payable-row {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto auto;
+  grid-template-columns: minmax(0, 1fr) auto auto 90px;
   padding: 14px;
 }
 
 .payable-row.generated {
   border-color: rgba(36, 112, 71, 0.42);
   background: linear-gradient(90deg, #f0fdf4, #fff);
+}
+
+.payable-row.settled {
+  opacity: 0.72;
+  background: #f5f8f5;
+}
+
+.payable-row.overdue {
+  border-color: rgba(180, 35, 24, 0.26);
+  background: linear-gradient(90deg, #fff7f7, #fff);
 }
 
 .payable-row strong,
@@ -1609,6 +1685,28 @@ button:focus-visible {
 .payable-row small {
   color: var(--muted);
   font-size: 13px;
+}
+
+.row-action {
+  align-self: center;
+  border: 1px solid rgba(36, 112, 71, 0.24);
+  background: var(--forest);
+  color: #fff;
+  border-radius: 999px;
+  padding: 9px 12px;
+  font-size: 12px;
+  font-weight: 950;
+  transition: transform 150ms ease, opacity 150ms ease, background 150ms ease;
+}
+
+.row-action:hover:not(:disabled) {
+  transform: translateY(-1px);
+  background: var(--green);
+}
+
+.row-action:disabled {
+  cursor: not-allowed;
+  opacity: 0.48;
 }
 
 .cash-bucket {
@@ -1635,6 +1733,98 @@ button:focus-visible {
   height: 7px;
   border-radius: 999px;
   background: var(--green);
+}
+
+.attention-record {
+  border-color: rgba(185, 138, 70, 0.42);
+  background: linear-gradient(135deg, #fffdf7, #fff7e5);
+}
+
+.flow-step {
+  position: relative;
+  display: grid;
+  gap: 5px;
+  padding: 14px 14px 14px 18px;
+}
+
+.flow-step::before {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 5px;
+  background: var(--wood);
+}
+
+.flow-step span {
+  color: var(--wood);
+  font-size: 12px;
+  font-weight: 950;
+}
+
+.flow-step strong {
+  color: var(--forest);
+  font-size: 18px;
+}
+
+.flow-step p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.bank-card {
+  display: grid;
+  gap: 6px;
+  padding: 16px;
+}
+
+.bank-card span {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 950;
+}
+
+.bank-card strong {
+  color: var(--forest);
+  font-size: 30px;
+}
+
+.bank-card small {
+  color: var(--muted);
+}
+
+.shipment-evidence,
+.record-actions-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.shipment-evidence span {
+  padding: 7px 9px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--cream);
+  color: var(--forest);
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.bank-movement {
+  display: grid;
+  grid-template-columns: 92px minmax(0, 1fr) auto;
+}
+
+.bank-movement b {
+  color: var(--forest);
+}
+
+.bank-movement.outflow b {
+  color: var(--red);
+}
+
+.bank-movement.inflow b {
+  color: var(--green);
 }
 
 .table-row strong {
@@ -2373,6 +2563,10 @@ button:focus-visible {
   }
 
   .payable-row {
+    grid-template-columns: 1fr;
+  }
+
+  .bank-movement {
     grid-template-columns: 1fr;
   }
 

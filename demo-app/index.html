@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta name="theme-color" content="#102f24" />
-    <title>Arbor ERP Demo</title>
+    <title>Arbor ERP</title>
     <link rel="manifest" href="manifest.webmanifest" />
     <link rel="icon" href="assets/icon.svg" />
     <link rel="stylesheet" href="styles.css" />
@@ -15,22 +15,22 @@
         <div class="login-art">
           <div class="brand-mark">LR</div>
           <div>
-            <p class="eyebrow">Arbor Demo</p>
+            <p class="eyebrow">Arbor ERP</p>
             <h1>Compras y direccion en una <br class="mobile-break" />app que se entiende.</h1>
-            <p class="lead">Dashboard ejecutivo, aprobaciones, inventario critico, documentos y copiloto operativo en una demo jugable.</p>
+            <p class="lead">Dashboard ejecutivo, aprobaciones, inventario critico, documentos y copiloto operativo en una sola plataforma.</p>
           </div>
           <div class="sync-card">
-            <span>Demo lista</span>
+            <span>Operacion lista</span>
             <strong>10 OC</strong>
             <small>Aprobar, rechazar, revisar documentos y ver motivos.</small>
           </div>
         </div>
         <form class="login-panel" id="loginForm">
-          <p class="eyebrow">Acceso demo</p>
+          <p class="eyebrow">Acceso ejecutivo</p>
           <h2>Direccion ejecutiva</h2>
           <label>
             Usuario
-            <input value="demo@grupolareforma.com" autocomplete="username" />
+            <input value="direccion@grupolareforma.com" autocomplete="username" />
           </label>
           <label>
             Perfil
@@ -40,8 +40,8 @@
               <option>Finanzas</option>
             </select>
           </label>
-          <button type="submit">Entrar a la demo</button>
-          <p class="fine-print">Sin datos reales. Sin escritura a sistemas reales. Flujo de prueba.</p>
+          <button type="submit">Entrar a Arbor</button>
+          <p class="fine-print">Ambiente operativo para validar decisiones, documentos y flujo financiero.</p>
         </form>
       </section>
 
@@ -51,23 +51,24 @@
             <div class="brand-mark small">LR</div>
             <div>
               <strong>Grupo La Reforma</strong>
-              <span>Arbor Demo</span>
+              <span>Arbor ERP</span>
             </div>
           </div>
           <nav class="nav-list" aria-label="Vistas">
             <button class="nav-item active" data-view="dashboard">Dashboard</button>
             <button class="nav-item" data-view="ventas">Ventas</button>
+            <button class="nav-item" data-view="embarques">Embarques</button>
             <button class="nav-item" data-view="compras">Compras</button>
             <button class="nav-item" data-view="inventario">Inventario</button>
             <button class="nav-item muted-module" disabled>Manufactura</button>
-            <button class="nav-item muted-module" disabled>Facturacion</button>
-            <button class="nav-item muted-module" disabled>CxC</button>
+            <button class="nav-item" data-view="facturacion">Facturacion</button>
+            <button class="nav-item" data-view="cxc">CxC</button>
             <button class="nav-item" data-view="cxp">CxP</button>
-            <button class="nav-item muted-module" disabled>Bancos</button>
+            <button class="nav-item" data-view="bancos">Bancos</button>
           </nav>
           <div class="side-note">
             <span class="status-dot"></span>
-            Demo operativa con datos ficticios.
+            Operacion activa.
           </div>
         </aside>
 
@@ -88,8 +89,8 @@
             </div>
             <div class="top-actions">
               <button class="ghost notification-trigger" id="notifyBtn">Alertas <span id="notifyCount">0</span></button>
-              <button class="ghost" id="installBtn" hidden>Instalar PWA</button>
-              <button class="ghost" id="resetBtn">Reiniciar demo</button>
+              <button class="ghost" id="installBtn" hidden>Instalar app</button>
+              <button class="ghost" id="resetBtn">Reiniciar sesion</button>
             </div>
             <div class="notification-panel" id="notificationPanel" hidden></div>
           </header>
@@ -131,7 +132,7 @@
               <article class="panel">
                 <div class="panel-head">
                   <h3>Alertas ejecutivas</h3>
-                  <span id="syncStamp">Demo operativa</span>
+                  <span id="syncStamp">Operacion activa</span>
                 </div>
                 <div class="alerts-list" id="alertsList"></div>
               </article>
@@ -256,6 +257,126 @@
             </div>
           </section>
 
+          <section class="view" id="embarquesView">
+            <div class="module-hero shipping-hero">
+              <div>
+                <p class="eyebrow">Embarques</p>
+                <h3>La reserva se vuelve salida real cuando se libera el embarque.</h3>
+                <p>Ventas compromete inventario; Embarques descuenta fisicamente, genera remision y deja evidencia en el expediente.</p>
+              </div>
+              <div class="cxp-total">
+                <span>Pendientes de salida</span>
+                <strong id="shipmentPendingTotal">0</strong>
+              </div>
+            </div>
+            <div class="split-grid operational-grid">
+              <article class="panel">
+                <div class="panel-head">
+                  <h3>Pedidos por embarcar</h3>
+                  <span id="shipmentCount"></span>
+                </div>
+                <div id="shipmentList"></div>
+              </article>
+              <article class="panel">
+                <div class="panel-head">
+                  <h3>Regla de inventario</h3>
+                  <span>Reserva vs salida</span>
+                </div>
+                <div id="shipmentRule"></div>
+              </article>
+            </div>
+          </section>
+
+          <section class="view" id="facturacionView">
+            <div class="module-hero invoice-hero">
+              <div>
+                <p class="eyebrow">Facturacion</p>
+                <h3>Pedido, factura, CFDI y saldo viven en el mismo expediente.</h3>
+                <p>El timbrado queda ligado al pedido y alimenta CxC sin pedir reportes externos.</p>
+              </div>
+              <div class="cxp-total">
+                <span>Facturado visible</span>
+                <strong id="invoiceTotal">$0</strong>
+              </div>
+            </div>
+            <div class="split-grid operational-grid">
+              <article class="panel">
+                <div class="panel-head">
+                  <h3>Facturas y CFDI</h3>
+                  <span id="invoiceCount"></span>
+                </div>
+                <div id="invoiceList"></div>
+              </article>
+              <article class="panel">
+                <div class="panel-head">
+                  <h3>Cadena de venta</h3>
+                  <span>Pedido a cobranza</span>
+                </div>
+                <div id="invoiceFlow"></div>
+              </article>
+            </div>
+          </section>
+
+          <section class="view" id="cxcView">
+            <div class="module-hero cxc-hero">
+              <div>
+                <p class="eyebrow">Cuentas por cobrar</p>
+                <h3>Cobranza conectada a factura, cliente y banco.</h3>
+                <p>Registrar un cobro liquida la CxC y genera una entrada bancaria inmediata.</p>
+              </div>
+              <div class="cxp-total">
+                <span>Saldo por cobrar</span>
+                <strong id="cxcTotal">$0</strong>
+              </div>
+            </div>
+            <div class="split-grid operational-grid">
+              <article class="panel">
+                <div class="panel-head">
+                  <h3>Cartera abierta</h3>
+                  <span id="cxcCount"></span>
+                </div>
+                <div id="receivablesList"></div>
+              </article>
+              <article class="panel">
+                <div class="panel-head">
+                  <h3>Prioridad de cobranza</h3>
+                  <span>Hoy</span>
+                </div>
+                <div id="collectionFocus"></div>
+              </article>
+            </div>
+          </section>
+
+          <section class="view" id="bancosView">
+            <div class="module-hero bank-hero">
+              <div>
+                <p class="eyebrow">Bancos</p>
+                <h3>La caja cambia cuando cobras o pagas dentro de Arbor.</h3>
+                <p>CxC entra a bancos, CxP sale de bancos y direccion ve el efecto sin esperar reportes manuales.</p>
+              </div>
+              <div class="cxp-total">
+                <span>Banco operativo</span>
+                <strong id="bankTotal">$0</strong>
+              </div>
+            </div>
+            <div class="split-grid operational-grid">
+              <article class="panel">
+                <div class="panel-head">
+                  <h3>Cuentas bancarias</h3>
+                  <span>Operacion</span>
+                </div>
+                <div id="bankAccounts"></div>
+              </article>
+              <article class="panel">
+                <div class="panel-head">
+                  <h3>Movimientos recientes</h3>
+                  <span>3 meses</span>
+                </div>
+                <div id="bankMovements"></div>
+              </article>
+            </div>
+          </section>
+
         </main>
         <div class="mobile-nav-backdrop" id="mobileNavBackdrop" hidden></div>
         <nav class="bottom-nav" aria-label="Accesos rapidos">
@@ -304,6 +425,7 @@
       </div>
     </dialog>
 
+    <script src="simulation-core.js"></script>
     <script src="app.js" type="module"></script>
   </body>
 </html>

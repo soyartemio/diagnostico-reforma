@@ -22,7 +22,7 @@
     "timeline": [
       { "label": "Requisicion creada", "time": "08:14", "by": "Planta Durango" },
       { "label": "Cotizacion adjunta", "time": "09:05", "by": "Compras" },
-      { "label": "Comparativo generado", "time": "10:22", "by": "Sistema demo" },
+      { "label": "Comparativo generado", "time": "10:22", "by": "Sistema Arbor" },
       { "label": "Pendiente direccion", "time": "11:10", "by": "Workflow" }
     ],
     "documents": [
@@ -42,7 +42,7 @@
       {
         "type": "Comparativo",
         "title": "Comparativo historico",
-        "issuer": "Historico demo",
+        "issuer": "Historico operativo",
         "date": "2026-05-17",
         "summary": "La compra esta 14.8% arriba de la ultima OC comparable y 9.3% arriba del promedio trimestral.",
         "fields": [
@@ -112,7 +112,7 @@
       {
         "type": "Inventario",
         "title": "Inventario comprometido",
-        "issuer": "Inventario demo",
+        "issuer": "Inventario operativo",
         "date": "2026-05-17",
         "summary": "La compra cubre pedidos con material comprometido y reduce riesgo de promesa incumplida.",
         "fields": ["Cobertura actual: 4 dias", "Cobertura con compra: 13 dias", "Pedidos ligados: 6", "Alerta: no prometer excedentes"]
@@ -181,7 +181,7 @@
     "items": [{ "sku": "HER-FER-80", "name": "Herrajes para embarque ferroviario", "qty": 80, "unit": "Set", "price": 4460 }],
     "timeline": [
       { "label": "Solicitud creada", "time": "09:11", "by": "Embarques" },
-      { "label": "Impacto detectado", "time": "09:30", "by": "Sistema demo" },
+      { "label": "Impacto detectado", "time": "09:30", "by": "Sistema Arbor" },
       { "label": "Pendiente autorizacion", "time": "09:46", "by": "Workflow" }
     ],
     "documents": [
@@ -264,7 +264,7 @@
     ],
     "documents": [
       { "type": "Alcance", "title": "Alcance tecnico ECN-209", "issuer": "Energia y Calderas del Norte", "date": "2026-05-17", "summary": "Servicio critico con actividades y garantias detalladas.", "fields": ["Paro estimado: 6 horas", "Garantia: 45 dias", "Incluye refacciones: si", "Validacion: pendiente"] },
-      { "type": "Comparativo", "title": "Historico de servicios", "issuer": "Base demo", "date": "2026-05-17", "summary": "El costo sube 8.6% contra servicio comparable.", "fields": ["Ultimo: $472,000", "Actual: $512,600", "Diferencia: $40,600", "Recomendacion: negociar"] }
+      { "type": "Comparativo", "title": "Historico de servicios", "issuer": "Base operativa", "date": "2026-05-17", "summary": "El costo sube 8.6% contra servicio comparable.", "fields": ["Ultimo: $472,000", "Actual: $512,600", "Diferencia: $40,600", "Recomendacion: negociar"] }
     ]
   },
   {
